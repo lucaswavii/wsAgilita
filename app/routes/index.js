@@ -28,6 +28,10 @@ module.exports = function(application){
         application.app.controllers.classificacao.index(application, req, res);
     });
 
+    application.get('/tipocartao', function(req, res){		
+        application.app.controllers.tipocartao.index(application, req, res);
+    });
+
     application.get('/usuario', function(req, res){		
         application.app.controllers.usuario.index(application, req, res);
     });
