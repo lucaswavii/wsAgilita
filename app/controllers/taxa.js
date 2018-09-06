@@ -7,6 +7,7 @@ module.exports.index = function( application, req, res ){
     
     var id = req.params._id;
     
+    
     var connection = application.config.dbConnection();
     var taxaDao = new application.app.models.TaxaDAO(connection);
     var contratoDao = new application.app.models.ContratoDAO(connection);
