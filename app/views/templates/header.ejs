@@ -22,7 +22,7 @@
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="../images/agilita.jpg" class="user-image" alt="User Image">
-                        <span class="hidden-xs"><%= sessao.nome %></span>
+                        <span class="hidden-xs"><%= sessao.usuario.nome %></span>
                         
                     </a>
                     <ul class="dropdown-menu">
@@ -30,8 +30,8 @@
                         <li class="user-header">
                             <img src="../images/agilita.jpg" class="img-circle" alt="User Image">
                             <p>
-                                <%= sessao.nome %> - <%= sessao.gruponome %>
-                                <small><%= sessao.empresanome %></small>
+                                <%= sessao.usuario.nome %> - <%= sessao.usuario.gruponome %>
+                                <small><%= sessao.usuario.empresanome %></small>
                             </p>
                             
                             
@@ -150,7 +150,7 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    
+                        <li><a href="/contrato"><i class="fa fa-book"></i> Contrato</a></li>
                     <li class="treeview">
                         <a href="#"><i class="fa fa-outdent"></i> Conciliação
                         <span class="pull-right-container">
@@ -208,7 +208,12 @@
                 
                 </ul>
             </li>
-           
+            <li>
+                <a href="/configuracao">
+                    <i class="fa fa fa-sliders"></i> <span>Configurações</span>                    
+                </a>
+            </li>
+            
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-lock"></i>

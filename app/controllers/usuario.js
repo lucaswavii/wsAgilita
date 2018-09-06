@@ -172,15 +172,17 @@ module.exports.login = function( application, req, res ){
 
     var connection = application.config.dbConnection();
     var usuarioDao = new application.app.models.UsuarioDAO(connection);       
-   
+    var configuracaoDao = new application.app.models.ConfiguracaoDAO(connection);
+
     usuarioDao.login(dadosForms, function(error, result){
       
         if(result && result.length > 0 ) {
-			req.session.usuario = result[0];
-            req.session.permissao = {};
-            connection.end();					
-            res.redirect("/index")
-            return;
+            configuracaoDao.configuracao( result[0].empresaid, function(error, configuracao){
+                req.session.usuario = { usuario:result[0],permissao:{}, configuracao: configuracao[0] }                
+                connection.end();					
+                res.redirect("/index")
+                return;
+            });
         } else {
             connection.end();	
             req.flash('errorMessage', 'Usuário ou Senha inválido!')				

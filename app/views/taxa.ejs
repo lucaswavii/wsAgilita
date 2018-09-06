@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <% include /templates/head %>
+    </head>
+    <% function leftPad(value, totalWidth, paddingChar) { %>
+    <%      var length = totalWidth - value.toString().length + 1; %>
+    <%      return Array(length).join(paddingChar || '0') + value; %>
+    <%  }; %>
+    <% var now = new Date() %>
+    <% var hoje = leftPad(now.getDate(), 2) + '/' + leftPad((now.getMonth() + 1), 2) + '/' +  leftPad(now.getFullYear(), 4) %>
+    <% var hora = leftPad(now.getHours(),2) + ":" + leftPad(now.getMinutes(),2) %>
+    <% var hoje = leftPad(now.getFullYear(), 4) + '-' + leftPad((now.getMonth() + 1), 2)  + '-' +   leftPad(now.getDate(), 2)   %>
+    
+    <% function getFormattedDate(date) { %>
+        <%  var year = date.getFullYear(); %>
+        <%  var month = (1 + date.getMonth()).toString(); %>
+        <%  month = month.length > 1 ? month : '0' + month; %>
+        <%  var day = date.getDate().toString(); %>
+        <%  day = day.length > 1 ? day : '0' + day; %>
+        <%  return day + '/' + month + '/' + year %>
+    <% } %>
+   
+    <body class="sidebar-mini wysihtml5-supported skin-red-light">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+
+            <% include /templates/header %>
+            <div class="content-wrapper">
+               
+                <!-- Main content -->
+                <section class="content">
+
+                    <!-- Default box -->
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <% console.log(contratos ) %>
+                            <div class="user-block">
+                                <img class="img-circle" src="../dist/img/user1-128x128.jpg" alt="User Image">
+                                <span class="username"><a href="#"><%= pessoas[0].nome %></a></span>
+                                <span class="description">Número: <%= contratos[0].numero %></span>
+                                <span class="description">Período: <%= getFormattedDate(contratos[0].inicio) %> - <%= getFormattedDate( contratos[0].fim ) %></span>                                
+                            </div>
+                
+                            <div class="box-tools pull-right">
+                                
+                                
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                 <div class="modal fade" id="modal-default">
+                                    <div class="modal-dialog">
+                                        <form role="form" action="/taxaSalvar" method="post">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                    <h4 class="modal-title">NOVO REGISTRO</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="container-fluid">
+                                                        <div class="row">                                                    
+                                                            
+                                                            
+                                                        </div>
+                                                    </div>                                        
+                                                </div>
+                                                
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/taxa/<%= idContrato %>'">Cancelar</button>
+                                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
+                                <!-- /.modal -->
+                            </div> 
+                                                  
+                        </div>
+                       
+                        <div class="box-body">
+                            <table id="grddados" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        
+                                        <th>Administradora</th>
+                                        <th>Cartão</th>
+                                        <th>Parcela</th>
+                                        <th>Bandeira</th>
+                                        <th>Tx</th>
+                                        <th>Tf</th>
+                                        <th>DD Prazo</th>
+                                        <th>Obs</th>
+                                        <th>
+                                            <div class="tools">                                               
+                                                <a data-toggle="tooltip" data-original-title="Editar Registro"><i class="fa fa-edit"></i></a>
+                                                <a data-toggle="tooltip" data-original-title="Excluir Registro"><i class="fa fa-trash-o"></i></a> 
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            
+                            
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer">
+                            <button type="button" data-toggle="modal" data-target="#modal-default" class="btn btn-block btn-primary btn-sm">Nova Taxa de Contrato</button>
+                        </div>
+                        <!-- /.box-footer-->
+                    </div>
+                    <!-- /.box -->
+
+                </section>
+                <!-- /.content -->
+
+            </div>
+
+            <!-- /.content-wrapper -->
+            <% include /templates/footer %>
+
+            <div class="control-sidebar-bg"></div>
+        </div>
+    </body>
+    <% include /templates/scripts %>
+
+</html>

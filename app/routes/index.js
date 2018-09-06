@@ -32,6 +32,34 @@ module.exports = function(application){
         application.app.controllers.tipocartao.index(application, req, res);
     });
 
+    application.get('/tipoparcela', function(req, res){		
+        application.app.controllers.tipoparcela.index(application, req, res);
+    });
+
+    application.get('/bandeira', function(req, res){		
+        application.app.controllers.bandeira.index(application, req, res);
+    });
+
+    application.get('/administradora', function(req, res){		
+        application.app.controllers.administradora.index(application, req, res);
+    });
+
+    application.get('/tipo', function(req, res){		
+        application.app.controllers.tipo.index(application, req, res);
+    });
+
+    application.get('/solucao', function(req, res){		
+        application.app.controllers.solucao.index(application, req, res);
+    });
+
+    application.get('/contrato', function(req, res){		
+        application.app.controllers.contrato.index(application, req, res);
+    });
+
+    application.get('/configuracao', function(req, res){		
+        application.app.controllers.configuracao.index(application, req, res);
+    });
+
     application.get('/usuario', function(req, res){		
         application.app.controllers.usuario.index(application, req, res);
     });
