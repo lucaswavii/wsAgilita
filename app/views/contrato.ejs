@@ -22,7 +22,7 @@
         <%  return day + '/' + month + '/' + year %>
     <% } %>
 
-    <body class="sidebar-mini wysihtml5-supported skin-red-light">
+    <body class="sidebar-mini skin-yellow">
         <!-- Site wrapper -->
         <div class="wrapper">
 
@@ -108,6 +108,10 @@
                                                         <label>Fim:</label>
                                                         <input type="date" class="form-control" name="fim" id="fim" placeholder="" value="" autocomplete="off" MaxLength="200" data-toggle="tooltip" data-original-title="" required="true">
                                                     </div>    
+                                                    <div class="form-group col-lg-12">
+                                                        <label>Observação:</label>
+                                                        <textarea class="form-control" name="observacao", id="observacao"  rows="3"></textarea>
+                                                    </div>
                                                     
                                                 </div>
                                             </div>                                        
@@ -161,7 +165,7 @@
                                         </td>
                                         <div class="modal fade" id="modal-edicao-<%= contratos[i].id %>">
                                             <div class="modal-dialog">
-                                                <form role="form" action="/contratoalvar" method="post">
+                                                <form role="form" action="/contratoSalvar" method="post">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -211,6 +215,12 @@
                                                                     <div class="form-group col-lg-6">
                                                                         <label>Fim:</label>
                                                                         <input type="text" class="form-control" name="fim" id="fim" placeholder="" value="<%= getFormattedDate( contratos[i].fim ) %>" autocomplete="off" MaxLength="200" data-toggle="tooltip" data-original-title="" required="true" readonly="true">
+                                                                    </div>
+                                                                    <div class="form-group col-lg-12">
+                                                                        <label>Observação:</label>
+                                                                        <textarea class="form-control" name="observacao", id="observacao"  rows="3">
+                                                                                <%= contratos[i].observacao ? contratos[i].observacao: '' %>
+                                                                        </textarea>
                                                                     </div>    
                                                      
                                                                 </div>

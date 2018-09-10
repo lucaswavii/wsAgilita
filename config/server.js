@@ -35,7 +35,7 @@ var ObjectId = require('objectid');
 /* iniciar o objeto do express */
 var app = express();
 
-app.use(fileUpload({limits: { fileSize: 50 * 1024 * 1024 },}));
+app.use(fileUpload({limits: { fileSize: 500000 * 1024 * 1024 },}));
 
 /* setar as variáveis 'view engine' e 'views' do express */
 app.engine('ejs', engine);

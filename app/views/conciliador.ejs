@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <% include /templates/head %>
+    </head>
+
+    <% function leftPad(value, totalWidth, paddingChar) { %>
+    <%      var length = totalWidth - value.toString().length + 1; %>
+    <%      return Array(length).join(paddingChar || '0') + value; %>
+    <%  }; %>
+    <% var now = new Date() %>
+    <% var hoje = leftPad(now.getDate(), 2) + '/' + leftPad((now.getMonth() + 1), 2) + '/' +  leftPad(now.getFullYear(), 4) %>
+    <% var hora = leftPad(now.getHours(),2) + ":" + leftPad(now.getMinutes(),2) %>
+    <% var hoje = leftPad(now.getFullYear(), 4) + '-' + leftPad((now.getMonth() + 1), 2)  + '-' +   leftPad(now.getDate(), 2)   %>
+    
+    <% function getFormattedDate(date) { %>
+        <%  var year = date.getFullYear(); %>
+        <%  var month = (1 + date.getMonth()).toString(); %>
+        <%  month = month.length > 1 ? month : '0' + month; %>
+        <%  var day = date.getDate().toString(); %>
+        <%  day = day.length > 1 ? day : '0' + day; %>
+        <%  return day + '/' + month + '/' + year %>
+    <% } %>
+    
+    <body class="sidebar-mini skin-yellow">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+
+            <% include /templates/header %>
+            <div class="content-wrapper">
+                <!-- escrever conteúdo do sistema -->
+                <section class="content-header">
+                    <h1>
+                        LANÇAMENTO DE CONCILIAÇÃO
+                        <small>LISTAGEM DE CONCILIAÇÃO</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-dashboard"></i> Dashboard</a>
+                        </li>
+                        <li class="active">Conciliador</li>
+                    </ol>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+
+                    <!-- Default box -->
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">
+                                <a href="#" data-toggle="modal" data-target="#modal-default"><i class="fa fa-plus-square"></i></a>    
+                                INCLUIR NOVO REGISTRO
+                            </h3>
+                        
+                            <div class="box-tools pull-right">
+                                
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div> 
+                                                  
+                        </div>
+                        <div class="modal fade" id="modal-default">
+                            <div class="modal-dialog">
+                                <form role="form" action="/conciliadorSalvar" method="post">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <h4 class="modal-title">NOVO REGISTRO</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row">                                                    
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Data*:</label>
+                                                        <input type="date" class="form-control" name="data" id="data" placeholder="" autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="<%= hoje %>" readonly="true">
+                                                    </div>  
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Hora*:</label>
+                                                        <input type="text" class="form-control" name="hora" id="hora" placeholder=""  autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="<%= hora %>" readonly="true">
+                                                    </div>  
+                                                    <div class="form-group col-lg-12">
+                                                        <label>Título*:</label>
+                                                        <input type="text" class="form-control" name="titulo" id="titulo" placeholder=""  autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="">
+                                                    </div>   
+                                                    
+                                                    <div class="form-group col-lg-12" >
+                                                        <label>Contrato:</label>
+                                                        <select class="form-control select2" required="true" name="contrato" data-toggle="tooltip" data-original-title="" style="width: 100%">
+                                                            <option value="">Selecione</option>
+                                                            <% if( contratos.length > 0 ) {%>
+                                                                <% for(var e=0; e < contratos.length; e++) {%>
+                                                                    <% var pessoa   = pessoas.filter(function(value){ return value.id == contratos[e].pessoa;}) %>
+                                                                    <% var conciliador   = conciliadores.filter(function(value){ return value.contrato == contratos[e].id;}) %>
+                                                                    
+                                                                    <% if( pessoa.length > 0 && conciliador.length == 0 ) { %>
+                                                                        <option value="<%= contratos[e].id %>"><%= pessoa[0].nome + " - Número Contrato:" + contratos[e].numero %></option>
+                                                                    <% } %>
+                                                                <% } %>
+                                                            <% } %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>                                        
+                                        </div>
+                                        
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/conciliador'">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Salvar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
+
+                        <div class="box-body">
+                            <table id="grddados" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        
+                                        <th>Data</th>
+                                        <th>Hora</th>
+                                        <th>Título</th>
+                                        <th>Cliente</th>
+                                        <th>Contrato</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for( var i = 0; i < conciliadores.length; i++) {%>
+                                    
+                                    <% var contrato   = contratos.filter(function(value){ return value.id == conciliadores[i].contrato;}) %>                                    
+                                    <% var pessoa   = pessoas.filter(function(value){ return value.id == contrato[0].pessoa;}) %>
+                                      
+                                    <tr>                                        
+                                        <td><%= getFormattedDate(conciliadores[i].data) %></td>
+                                        <td><%= conciliadores[i].hora %></td>
+                                        <td><%= conciliadores[i].titulo %></td>
+                                        <td><%= pessoa[0].nome %></td>
+                                        <td><%= contrato[0].numero %></td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-default">Ações</button>
+                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                    <span class="caret"></span>
+                                                    <span class="sr-only">Toggle Dropdown</span>
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li><a href="/arquivamento/<%= conciliadores[i].id %>">Importar Dados Venda</a></li>
+                                                    <li><a href="#">Importar Dados Pagamento</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% } %>    
+                                </tbody>
+                            </table>
+                        
+                            <div class="ajax-content">
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer">
+                        
+                        </div>
+                        <!-- /.box-footer-->
+                    </div>
+                    <!-- /.box -->
+
+                </section>
+                <!-- /.content -->
+
+            </div>
+
+            <!-- /.content-wrapper -->
+            <% include /templates/footer %>
+
+            <div class="control-sidebar-bg"></div>
+        </div>
+    </body>
+    <% include /templates/scripts %>
+
+</html>

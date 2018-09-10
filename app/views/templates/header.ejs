@@ -2,9 +2,9 @@
     <!-- Logo -->
     <a href="/index" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>W</b>AG</span>
+        <span class="logo-mini"><b>WS</b>C</span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>WS</b>AGILITA</span>
+        <span class="logo-lg"><b>WS</b>CONCILIA</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -21,14 +21,14 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="../images/agilita.jpg" class="user-image" alt="User Image">
+                        <img src="..<%= sessao.usuario.logo %>" class="user-image" alt="User Image">
                         <span class="hidden-xs"><%= sessao.usuario.nome %></span>
                         
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="../images/agilita.jpg" class="img-circle" alt="User Image">
+                            <img src="..<%= sessao.usuario.logo %>" class="img-circle" alt="User Image">
                             <p>
                                 <%= sessao.usuario.nome %> - <%= sessao.usuario.gruponome %>
                                 <small><%= sessao.usuario.empresanome %></small>
@@ -61,7 +61,7 @@
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="../images/agilita.jpg" class="img-circle" alt="User Image">
+                <img src="..<%= sessao.usuario.logoempresa %>" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
                 <p>Usuario Logado</p>
@@ -150,7 +150,9 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                        <li><a href="/contrato"><i class="fa fa-book"></i> Contrato</a></li>
+                    <li><a href="/contrato"><i class="fa fa-book"></i> Contrato</a></li>
+                    <li><a href="/conciliador"><i class="fa fa-clone"></i> Conciliação</a></li>
+                    <!--
                     <li class="treeview">
                         <a href="#"><i class="fa fa-outdent"></i> Conciliação
                         <span class="pull-right-container">
@@ -162,6 +164,7 @@
                             <li><a href="/pagamento"><i class="fa fa-minus-circle"></i> Pagamento</a></li>
                         </ul>
                     </li>
+                    -->
                     
                     
                 </ul>

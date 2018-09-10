@@ -5,7 +5,7 @@
         <% include /templates/head %>
     </head>
 
-    <body class="sidebar-mini wysihtml5-supported skin-red-light">
+    <body class="sidebar-mini skin-yellow">
         <!-- Site wrapper -->
         <div class="wrapper">
 
@@ -45,7 +45,7 @@
                         </div>
                         <div class="modal fade" id="modal-default">
                             <div class="modal-dialog">
-                                <form role="form" action="/pessoasalvar" method="post">
+                                <form role="form" action="/pessoasalvar" method="post" encType="multipart/form-data">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -146,7 +146,15 @@
                                                         <label>Cidade:</label>
                                                         <input type="text" class="form-control" name="cidade" id="cidade" placeholder="" value="" autocomplete="off" MaxLength="160">
                                                     </div>
-                                                          
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Imagem</label>
+                                                        <input class="form-control" name="pathImagem" id="pathImagem" placeholder="Imagem do Produto" readonly="true" value="">                                               
+                                                        <input type="file" name="imageFile" />
+                                                    </div>  
+                                                    <div class="form-group col-lg-3">
+                                                        <img class="img-responsive pad" src="images/noImagem.png"/>
+                                                
+                                                    </div>                             
 
                                                 </div>
                                             </div>                                        
@@ -207,7 +215,7 @@
                                         </td>
                                         <div class="modal fade" id="modal-edicao-<%= pessoas[i].id %>">
                                             <div class="modal-dialog">
-                                                <form role="form" action="/pessoaSalvar" method="post">
+                                                <form role="form" action="/pessoaSalvar" method="post" encType="multipart/form-data">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -260,61 +268,70 @@
                                                                                                                  
                                                                 </div>
                                                                 <div class="row">
-                                                                <div class="form-group col-lg-3">
-                                                                    <label>Cep:</label>
-                                                                    <input type="text" class="form-control" name="cep" id="cep" placeholder="" value="" autocomplete="off" MaxLength="9" onkeyup="formataCEP(this,event);">
-                                                                </div>
-                                                                <div class="form-group col-lg-7">
-                                                                    <label>Endereço:</label>
-                                                                    <input type="text" class="form-control" name="endereco" id="endereco" placeholder="" value="" autocomplete="off" MaxLength="200">
-                                                                </div> 
-                                                                <div class="form-group col-lg-2">
-                                                                    <label>Número:</label>
-                                                                    <input type="text" class="form-control" name="numero" id="numero" placeholder="" value="" autocomplete="off" MaxLength="30">
-                                                                </div> 
-                                                                <div class="form-group col-lg-12">
-                                                                    <label>Complemento:</label>
-                                                                    <input type="text" class="form-control" name="complemento" id="complemento" placeholder="" value="" autocomplete="off" MaxLength="200">
-                                                                </div>
-                                                                <div class="form-group col-lg-2">
-                                                                    <label>Uf</label>
-                                                                    <select class="form-control" style="width: 100%;">
-                                                                        <option value="">Selecione</option>
-                                                                        <option value="AC">AC</option>
-                                                                        <option value="AL">AL</option>
-                                                                        <option value="AP">AP</option>
-                                                                        <option value="AM">AM</option>
-                                                                        <option value="BA">BA</option>
-                                                                        <option value="CE">CE</option>
-                                                                        <option value="DF">DF</option>
-                                                                        <option value="GO">GO</option>
-                                                                        <option value="MA">MA</option>
-                                                                        <option value="MT">MT</option>
-                                                                        <option value="MS">MS</option>
-                                                                        <option value="MG">MG</option>
-                                                                        <option value="PA">PA</option>
-                                                                        <option value="PB">PB</option>
-                                                                        <option value="PR">PR</option>
-                                                                        <option value="PE">PE</option>
-                                                                        <option value="PI">PI</option>
-                                                                        <option value="RJ">RJ</option>
-                                                                        <option value="RN">RN</option>
-                                                                        <option value="RS">RS</option>
-                                                                        <option value="RO">RO</option>
-                                                                        <option value="SC">SC</option>
-                                                                        <option value="SP">SP</option>
-                                                                        <option value="SE">SE</option>
-                                                                        <option value="TO">TO</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="form-group col-lg-5">
-                                                                    <label>Bairro:</label>
-                                                                    <input type="text" class="form-control" name="bairro" id="bairro" placeholder="" value="" autocomplete="off" MaxLength="160">
-                                                                </div>
-                                                                <div class="form-group col-lg-5">
-                                                                    <label>Cidade:</label>
-                                                                    <input type="text" class="form-control" name="cidade" id="cidade" placeholder="" value="" autocomplete="off" MaxLength="160">
-                                                                </div>
+                                                                    <div class="form-group col-lg-3">
+                                                                        <label>Cep:</label>
+                                                                        <input type="text" class="form-control" name="cep" id="cep" placeholder="" value="" autocomplete="off" MaxLength="9" onkeyup="formataCEP(this,event);">
+                                                                    </div>
+                                                                    <div class="form-group col-lg-7">
+                                                                        <label>Endereço:</label>
+                                                                        <input type="text" class="form-control" name="endereco" id="endereco" placeholder="" value="" autocomplete="off" MaxLength="200">
+                                                                    </div> 
+                                                                    <div class="form-group col-lg-2">
+                                                                        <label>Número:</label>
+                                                                        <input type="text" class="form-control" name="numero" id="numero" placeholder="" value="" autocomplete="off" MaxLength="30">
+                                                                    </div> 
+                                                                    <div class="form-group col-lg-12">
+                                                                        <label>Complemento:</label>
+                                                                        <input type="text" class="form-control" name="complemento" id="complemento" placeholder="" value="" autocomplete="off" MaxLength="200">
+                                                                    </div>
+                                                                    <div class="form-group col-lg-2">
+                                                                        <label>Uf</label>
+                                                                        <select class="form-control" style="width: 100%;">
+                                                                            <option value="">Selecione</option>
+                                                                            <option value="AC">AC</option>
+                                                                            <option value="AL">AL</option>
+                                                                            <option value="AP">AP</option>
+                                                                            <option value="AM">AM</option>
+                                                                            <option value="BA">BA</option>
+                                                                            <option value="CE">CE</option>
+                                                                            <option value="DF">DF</option>
+                                                                            <option value="GO">GO</option>
+                                                                            <option value="MA">MA</option>
+                                                                            <option value="MT">MT</option>
+                                                                            <option value="MS">MS</option>
+                                                                            <option value="MG">MG</option>
+                                                                            <option value="PA">PA</option>
+                                                                            <option value="PB">PB</option>
+                                                                            <option value="PR">PR</option>
+                                                                            <option value="PE">PE</option>
+                                                                            <option value="PI">PI</option>
+                                                                            <option value="RJ">RJ</option>
+                                                                            <option value="RN">RN</option>
+                                                                            <option value="RS">RS</option>
+                                                                            <option value="RO">RO</option>
+                                                                            <option value="SC">SC</option>
+                                                                            <option value="SP">SP</option>
+                                                                            <option value="SE">SE</option>
+                                                                            <option value="TO">TO</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-lg-5">
+                                                                        <label>Bairro:</label>
+                                                                        <input type="text" class="form-control" name="bairro" id="bairro" placeholder="" value="" autocomplete="off" MaxLength="160">
+                                                                    </div>
+                                                                    <div class="form-group col-lg-5">
+                                                                        <label>Cidade:</label>
+                                                                        <input type="text" class="form-control" name="cidade" id="cidade" placeholder="" value="" autocomplete="off" MaxLength="160">
+                                                                    </div>
+                                                                    <div class="form-group col-lg-6">
+                                                                        <label>Imagem</label>
+                                                                        <input class="form-control" name="pathImagem" id="pathImagem" placeholder="Imagem do Produto" readonly="true" value="<%= pessoas[i].pathImagem ? pessoas[i].pathImagem : '' %>">                                               
+                                                                        <input type="file" name="imageFile" />
+                                                                    </div>  
+                                                                    <div class="form-group col-lg-3">
+                                                                        <img class="img-responsive pad" src="<%= pessoas[i].pathImagem ? pessoas[i].pathImagem : 'images/noImagem.png' %>"/>
+                                                                
+                                                                    </div>
                                                                     
 
                                                                 </div>

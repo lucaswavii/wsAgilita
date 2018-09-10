@@ -99,10 +99,23 @@ module.exports.salvar = function( application, req, res ){
     }
     
     var dadosForms = req.body;
-        
+    
+    var pathImagem = !dadosForms.pathImagem ? '/images/noImagem.png' : dadosForms.pathImagem;
+
+    if ( req.files.imageFile ) {
+        let sampleFile = req.files.imageFile;
+        pathImagem = '/images/' + sampleFile.name;
+        sampleFile.mv('app/public/images/' + sampleFile.name , function(err) {
+            if (err)
+              return res.status(500).send(err);
+        });
+    }
+   
+    dadosForms.pathImagem = pathImagem;
+   
     var connection = application.config.dbConnection();
     var empresaDao = new application.app.models.EmpresaDAO(connection);      
-    console.log(dadosForms) 
+    
     empresaDao.salvar(dadosForms, function(error, result){
         
         console.log(error)

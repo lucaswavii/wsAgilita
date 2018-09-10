@@ -8,3 +8,4 @@ module.exports.index = function( application, req, res ){
     res.render('index', { validacao : {}, sessao: req.session.usuario  });
     return;	
 }
+

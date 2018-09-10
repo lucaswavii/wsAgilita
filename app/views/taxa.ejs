@@ -21,8 +21,16 @@
         <%  day = day.length > 1 ? day : '0' + day; %>
         <%  return day + '/' + month + '/' + year %>
     <% } %>
+    <% function getFormattedDatePadrao(date) { %>
+        <%  var year = date.getFullYear(); %>
+        <%  var month = (1 + date.getMonth()).toString(); %>
+        <%  month = month.length > 1 ? month : '0' + month; %>
+        <%  var day = date.getDate().toString(); %>
+        <%  day = day.length > 1 ? day : '0' + day; %>
+        <%  return  year + '/' + month + '/' + day %>
+    <% } %>
    
-    <body class="sidebar-mini wysihtml5-supported skin-red-light">
+    <body class="sidebar-mini skin-yellow">
         <!-- Site wrapper -->
         <div class="wrapper">
 
@@ -37,10 +45,9 @@
                         <div class="box-header with-border">
                             <% console.log(contratos ) %>
                             <div class="user-block">
-                                <img class="img-circle" src="../dist/img/user1-128x128.jpg" alt="User Image">
+                                <img class="img-circle" src="..<%= pessoas[0].pathImagem ? pessoas[0].pathImagem : '/images/noImagem.png' %>" alt="User Image">
                                 <span class="username"><a href="#"><%= pessoas[0].nome %></a></span>
-                                <span class="description">Número: <%= contratos[0].numero %></span>
-                                <span class="description">Período: <%= getFormattedDate(contratos[0].inicio) %> - <%= getFormattedDate( contratos[0].fim ) %></span>                                
+                                <span class="description">Número: <%= contratos[0].numero %> - Período: <%= getFormattedDate(contratos[0].inicio) %> - <%= getFormattedDate( contratos[0].fim ) %></span>
                             </div>
                 
                             <div class="box-tools pull-right">
@@ -61,8 +68,82 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="container-fluid">
-                                                        <div class="row">                                                    
+                                                        <div class="row"> 
+
+                                                            <div class="form-group col-lg-3" >
+                                                                <label>Administradora:</label>
+                                                                <select class="form-control select2" required="true" name="administradora" data-toggle="tooltip" data-original-title="Informe o administradora" style="width: 100%" autofocus> 
+                                                                    <option value="">Selecione</option>
+                                                                    <% if( administradoras.length > 0 ) {%>
+                                                                        <% for(var e=0; e < administradoras.length; e++) {%>
+                                                                            <option value="<%= administradoras[e].id %>"><%= administradoras[e].nome %></option>
+                                                                        <% } %>
+                                                                    <% } %>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-lg-3" >
+                                                                <label>Tipo Cartão:</label>
+                                                                <select class="form-control select2" required="true" name="tipocartao" data-toggle="tooltip" data-original-title="Informe o administradora" style="width: 100%">
+                                                                    <option value="">Selecione</option>
+                                                                    <% if( tipocartoes.length > 0 ) {%>
+                                                                        <% for(var e=0; e < tipocartoes.length; e++) {%>
+                                                                            <option value="<%= tipocartoes[e].id %>"><%= tipocartoes[e].nome %></option>
+                                                                        <% } %>
+                                                                    <% } %>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="form-group col-lg-3" >
+                                                                <label>Tipo Parcela:</label>
+                                                                <select class="form-control select2" required="true" name="tipoparcela" data-toggle="tooltip" data-original-title="Informe o administradora" style="width: 100%">
+                                                                    <option value="">Selecione</option>
+                                                                    <% if( tipoparcelas.length > 0 ) {%>
+                                                                        <% for(var e=0; e < tipoparcelas.length; e++) {%>
+                                                                            <option value="<%= tipoparcelas[e].id %>"><%= tipoparcelas[e].nome %></option>
+                                                                        <% } %>
+                                                                    <% } %>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="form-group col-lg-3" >
+                                                                <label>Bandeira:</label>
+                                                                <select class="form-control select2" name="bandeira" data-toggle="tooltip" data-original-title="Informe o administradora" style="width: 100%">
+                                                                    <option value="">Selecione</option>
+                                                                    <% if( bandeiras.length > 0 ) {%>
+                                                                        <% for(var e=0; e < bandeiras.length; e++) {%>
+                                                                            <option value="<%= bandeiras[e].id %>"><%= bandeiras[e].nome %></option>
+                                                                        <% } %>
+                                                                    <% } %>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-lg-3">
+                                                                <label>Taxa:</label>
+                                                                <input type="text" class="form-control" name="taxa" id="taxa" placeholder="" value="0,00" autocomplete="off" onkeyup="formataValor(this,event);" data-toggle="tooltip" data-original-title="Informe o valor da taxa">
+                                                            </div>
+                                                            <div class="form-group col-lg-3">
+                                                                <label>Tarifa:</label>
+                                                                <input type="text" class="form-control" name="tarifa" id="tarifa" placeholder="" value="0,00" autocomplete="off" onkeyup="formataValor(this,event);" data-toggle="tooltip" data-original-title="Informe a tarifa da taxa">
+                                                            </div>
+
+                                                            <div class="form-group col-lg-3">
+                                                                <label>Dias Prazo:</label>
+                                                                <input type="number" class="form-control" name="diasprazo" id="diasprazo" placeholder="" value="0" autocomplete="off" data-toggle="tooltip" data-original-title="Informe o dias prazo.">
+                                                            </div>
+                                                            <div class="form-group col-lg-3">
+                                                                <label>Contrato:</label>
+                                                                <input type="text"  readonly="true" class="form-control" name="contrato" id="contrato" placeholder="" value="<%= idContrato %>">
+                                                            </div>   
                                                             
+
+                                                            <div class="form-group col-lg-6">
+                                                                <label>Início:</label>
+                                                                <input type="date" class="form-control" name="inicio" id="inicio" placeholder="" value="" autocomplete="off" data-toggle="tooltip" data-original-title="Informe data de início desta taxa.">
+                                                            </div>
+                                                            <div class="form-group col-lg-6">
+                                                                <label>Fim:</label>
+                                                                <input type="date" class="form-control" name="fim" id="fim" placeholder="" value="" autocomplete="off" data-toggle="tooltip" data-original-title="Informe data fim da taxa.">
+                                                            </div>
+            
                                                             
                                                         </div>
                                                     </div>                                        
@@ -94,8 +175,8 @@
                                         <th>Bandeira</th>
                                         <th>Tx</th>
                                         <th>Tf</th>
-                                        <th>DD Prazo</th>
-                                        <th>Obs</th>
+                                        <th>DD Prz</th>
+                                        <th>Vigência</th>
                                         <th>
                                             <div class="tools">                                               
                                                 <a data-toggle="tooltip" data-original-title="Editar Registro"><i class="fa fa-edit"></i></a>
@@ -105,6 +186,174 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <% for( var i = 0; i < taxas.length; i++) {%>
+                                        <% var administradora   = administradoras.filter(function(value){ return value.id == taxas[i].administradora;})  %> 
+                                        <% var tipocartao       = tipocartoes.filter(function(value){ return value.id == taxas[i].tipocartao;})  %> 
+                                        <% var tipoparcela      = tipoparcelas.filter(function(value){ return value.id == taxas[i].tipoparcela;})  %> 
+                                        <% var bandeira         = bandeiras.filter(function(value){ return value.id == taxas[i].bandeira;})  %> 
+                                        
+                                        <tr>
+                                            
+                                            <td><%= administradora[0].nome %></td>
+                                            <td><%= tipocartao[0].nome %></td>
+                                            <td><%= tipoparcela[0].nome %></td>
+                                            <td><%= bandeira.length > 0  ? bandeira[0].nome : '' %></td>
+                                            <td><%= taxas[i].taxa > 0 ? taxas[i].taxa.toFixed(2) : '0.00' %></td>
+                                            <td><%= taxas[i].tarifa > 0 ? taxas[i].tarifa.toFixed(2) : '0.00' %></td>
+                                            <td><%= taxas[i].diasprazo > 0  ? taxas[i].diasprazo : 0 %></td>
+                                            <td><%= getFormattedDate( taxas[i].inicio ) + " - " + getFormattedDate( taxas[i].fim) %></td>
+                                            
+                                            <td>
+                                                <div class="tools">
+                                                    <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= taxas[i].id %>"><i class="fa fa-edit"></i></a>
+                                                    <a href="#" data-toggle="modal" data-target="#modal-remove-<%= taxas[i].id %>"><i class="fa fa-trash-o"></i></a> 
+                                                </div>
+                                            </td>
+                                            <div class="modal fade" id="modal-edicao-<%= taxas[i].id %>">
+                                                <div class="modal-dialog">
+                                                    <form role="form" action="/taxaSalvar" method="post">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                                <h4 class="modal-title">EDIÇÃO REGISTRO</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        <div class="form-group col-lg-3">
+                                                                            <label>Id:</label>
+                                                                            <input type="text" class="form-control" name="id" id="id" placeholder="" value="<%= taxas[i].id %>" autocomplete="off" data-toggle="tooltip" data-original-title="" readonly="true">
+                                                                        </div>
+        
+                                                                    
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-group col-lg-3" >
+                                                                            <label>Administradora:</label>
+                                                                            <select class="form-control select2" required="true" name="administradora" data-toggle="tooltip" data-original-title="Informe o administradora" style="width: 100%" autofocus> 
+                                                                                <option value="">Selecione</option>
+                                                                                <% if( administradoras.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < administradoras.length; e++) {%>
+                                                                                        <option value="<%= administradoras[e].id %>"<%= administradora[0].id == administradoras[e].id ? 'selected' : '' %>><%= administradoras[e].nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group col-lg-3" >
+                                                                            <label>Tipo Cartão:</label>
+                                                                            <select class="form-control select2" required="true" name="tipocartao" data-toggle="tooltip" data-original-title="Informe o administradora" style="width: 100%">
+                                                                                <option value="">Selecione</option>
+                                                                                <% if( tipocartoes.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < tipocartoes.length; e++) {%>
+                                                                                        <option value="<%= tipocartoes[e].id %>" <%= tipocartao[0].id == tipocartoes[e].id ? 'selected' : '' %>><%= tipocartoes[e].nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>
+                                                                            </select>
+                                                                        </div>
+         
+                                                                        <div class="form-group col-lg-3" >
+                                                                            <label>Tipo Parcela:</label>
+                                                                            <select class="form-control select2" required="true" name="tipoparcela" data-toggle="tooltip" data-original-title="Informe o administradora" style="width: 100%">
+                                                                                <option value="">Selecione</option>
+                                                                                <% if( tipoparcelas.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < tipoparcelas.length; e++) {%>
+                                                                                        <option value="<%= tipoparcelas[e].id %>" <%= tipoparcela[0].id == tipoparcelas[e].id ? 'selected' : '' %>><%= tipoparcelas[e].nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>
+                                                                            </select>
+                                                                        </div>
+
+                                                                        <div class="form-group col-lg-3" >
+                                                                            <label>Bandeira:</label>
+                                                                            <select class="form-control select2" required="true" name="bandeira" data-toggle="tooltip" data-original-title="Informe o administradora" style="width: 100%">
+                                                                                <option value="">Selecione</option>
+                                                                                <% if( bandeiras.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < bandeiras.length; e++) {%>
+                                                                                        <option value="<%= bandeiras[e].id %>" <%= bandeira.length > 0 && bandeira[0].id == bandeiras[e].id ? 'selected' : '' %>><%= bandeiras[e].nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group col-lg-3">
+                                                                            <label>Taxa:</label>
+                                                                            <input type="text" class="form-control" name="taxa" id="taxa" placeholder="" value="<%= taxas[i].taxa > 0 ? taxas[i].taxa.toFixed(2).replace(',','').replace('.',',') :'0,00' %>" autocomplete="off" onkeyup="formataValor(this,event);" data-toggle="tooltip" data-original-title="Informe o valor da taxa">
+                                                                        </div>
+                                                                        <div class="form-group col-lg-3">
+                                                                            <label>Tarifa:</label>
+                                                                            <input type="text" class="form-control" name="tarifa" id="tarifa" placeholder="" value="<%= taxas[i].taxa > 0 ? taxas[i].tarifa.toFixed(2).replace(',','').replace('.',',') :'0,00' %>" autocomplete="off" onkeyup="formataValor(this,event);" data-toggle="tooltip" data-original-title="Informe a tarifa da taxa">
+                                                                        </div>
+
+                                                                        <div class="form-group col-lg-3">
+                                                                            <label>Dias Prazo:</label>
+                                                                            <input type="number" class="form-control" name="diasprazo" id="diasprazo" placeholder="" value="<%= taxas[i].diasprazo %>" autocomplete="off" data-toggle="tooltip" data-original-title="Informe o dias prazo.">
+                                                                        </div>
+
+                                                                        <div class="form-group col-lg-3">
+                                                                            <label>Contrato:</label>
+                                                                            <input type="text"  readonly="true" class="form-control" name="contrato" id="contrato" placeholder="" value="<%= idContrato %>">
+                                                                        </div>   
+                                                                        
+                                                                        <div class="form-group col-lg-6">
+                                                                            <label>Início:</label>
+                                                                            <input type="date" class="form-control" name="inicio" id="inicio" placeholder="" value="<%= getFormattedDatePadrao(taxas[i].inicio) %>" autocomplete="off" data-toggle="tooltip" data-original-title="Informe data de início desta taxa.">
+                                                                        </div>
+                                                                        <div class="form-group col-lg-6">
+                                                                            <label>Fim:</label>
+                                                                            <input type="date" class="form-control" name="fim" id="fim" placeholder="" value="<%= getFormattedDatePadrao(taxas[i].fim) %>" autocomplete="off" data-toggle="tooltip" data-original-title="Informe data fim da taxa.">
+                                                                        </div>
+                        
+                                                                        <div class="form-group col-lg-12">
+                                                                            <label>Observação:</label>
+                                                                            <textarea class="form-control" name="observacao", id="observacao" value="<%= taxas[i].observacao %>"  rows="3"><%= taxas[i].observacao %></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/taxa/<%= taxas[i].contrato%>'">Cancelar</button>
+                                                                <button type="submit" class="btn btn-primary">Salvar</button>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </form>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                            
+                                            <!-- /.modal -->
+
+                                            <!-- Excluir Registro -->
+                                            <div class="modal modal-danger fade" id="modal-remove-<%= taxas[i].id %>">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                            <h4 class="modal-title">Excluir Registro</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Deseja deletar o registro?</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/taxa/<%= taxas[i].contrato%>">
+                                                                Cancelar
+                                                            </a>
+                                                            <a class="btn btn-outline" href="/taxaExcluir/<%=  taxas[i].id   %>">
+                                                                Excluir
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                            <!-- /.modal -->
+                                        </tr>
+                                    <% } %>
                                 </tbody>
                             </table>
                             

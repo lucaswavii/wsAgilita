@@ -29,7 +29,7 @@ module.exports.index = function( application, req, res ){
                         
                         administradoraDao.listar(function(error, administradoras){
             
-                            taxaDao.listar(function(error, taxas){
+                            taxaDao.listar(contratos[0].id, function(error, taxas){
         
                                 connection.end();
                                 if( error ) {
@@ -127,32 +127,27 @@ module.exports.salvar = function( application, req, res ){
     }
     
     var dadosForms = req.body;
-
-    req.assert('nome', 'Nome é obrigatório!').notEmpty();       
-
-    var erros = req.validationErrors();
-
-    if(erros){
-        res.render('taxa', {validacao: erros,  taxas: [dadosForms], sessao: req.session.usuario});
-        return;
-    }
+    var taxa = dadosForms.taxa.replace('.','').replace(',','.')
+    var tarifa = dadosForms.tarifa.replace('.','').replace(',','.')
+    
+    dadosForms.taxa = taxa;
+    dadosForms.tarifa = tarifa;
+    dadosForms.bandeira = dadosForms.bandeira != "" ? dadosForms.bandeira : null;  
     
     var connection = application.config.dbConnection();
     var taxaDao = new application.app.models.TaxaDAO(connection);      
     
     taxaDao.salvar(dadosForms, function(error, result){
-        
-        
         if( error ) {
             console.log(error)
-            taxaDao.listar(function(error, taxas){      
-                connection.end();               
-                res.render('taxa', { validacao : error, taxas : taxas, sessao: req.session.usuario });
-                return;
-            });
+            connection.end();
+            req.flash('errorMessage', 'Error:' + error)				
+      
+            res.redirect('/taxa/'+ dadosForms.contrato);
+
         }
         connection.end();  
-        res.redirect('/taxa');
+        res.redirect('/taxa/'+ dadosForms.contrato);
 
     });
      

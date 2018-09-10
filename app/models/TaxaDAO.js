@@ -2,8 +2,8 @@ function TaxaDAO( connection ){
 	this._connection = connection; 
 }
 
-TaxaDAO.prototype.listar = function( callback) {
-	this._connection.query('select * from TAXA order by id', callback);	
+TaxaDAO.prototype.listar = function(contrato, callback) {
+	this._connection.query('select * from TAXA where contrato = ? order by id', contrato, callback);	
 }
 
 TaxaDAO.prototype.salvar = function( taxa, callback) {	

@@ -192,3 +192,119 @@ module.exports.login = function( application, req, res ){
     });
     
 };
+
+
+module.exports.logout = function(application, req, res){
+	req.session.destroy();
+	res.redirect("/login")
+}
+
+module.exports.esqueci = function(application, req, res){
+
+    var dadosForms = req.body;
+	
+	var connection = application.config.dbConnection();
+	var usuariosDao = new application.app.models.UsuarioDAO(connection);
+    var pessoaDao   = new application.app.models.PessoaDAO(connection);  
+
+    usuariosDao.listar(function(error, usuarios){
+        
+        var usuario = usuarios.filter(function(value){ return value.nome == dadosForms.usuario;});
+
+        if( usuario.length > 0 ) {
+            
+            pessoaDao.editar(usuario[0].pessoa, function(error, pessoa){
+                if( pessoa[0].email == dadosForms.email ){
+
+                    usuarios[0].senha = Math.random().toString(36).slice(-10); // Senha Temporaria
+                    console.log(usuarios[0].senha)
+                    var nodemailer = require('nodemailer');
+					var transporte = nodemailer.createTransport({ service: 'gmail', auth: { user: "suporte@wavii.com.br", pass: "Wavii180279" } });
+					var email = 
+					{
+						from: 'comercial@wavii.com.br', // Quem enviou este e-mail
+						to: pessoa[0].email, // Quem receberá
+						subject: 'Lembrança de Senha',  // Um assunto bacana :-) 
+						html: 'O usuário solicitou lembrança de senha:<br>' + "Usuário:" + usuarios[0].nome + "<br>Senha:" +  usuarios[0].senha // O conteúdo do e-mail
+					};
+					
+					transporte.sendMail(email, function(err, info){
+						if(err) {
+							console.log(err)
+						}
+					});
+                    
+                    var crypto = require('crypto');
+                    var senha_criptografada = crypto.createHash("md5").update(usuarios[0].senha).digest("hex");
+                    
+                    usuarios[0].senha = senha_criptografada
+                    usuariosDao.salvar( usuarios[0], function(error, usuarios){
+                        connection.end();	
+                        req.flash('errorMessage', 'Nova senha foi enviado para o e-mail ' + dadosForms.email + '.')				
+                        res.redirect("/login")
+                        return;
+                        
+                    });
+    
+                } else {
+                    connection.end();	
+                    req.flash('errorMessage', 'O e-mail não confere com o e-mail do usuário.')				
+                    res.redirect("/login")
+                    return;
+                            
+                }
+            });
+
+        } else {
+            connection.end();	
+            req.flash('errorMessage', 'Usuário não encontrado na base de dados!')				
+            res.redirect("/login")
+            return;
+        }
+
+        
+    });
+/*
+	usuariosDao.esqueci(dadosForm, function(error, usuarios ){
+		if ( usuarios.length > 0 ) {
+				
+				usuarios[0].senha = Math.random().toString(36).slice(-10); // Senha Temporaria
+
+				funcionarioDao.editar( usuarios[0].funcionario,function(error, funcionarios){
+					
+					
+					var nodemailer = require('nodemailer');
+					var transporte = nodemailer.createTransport({ service: 'gmail', auth: { user: "suporte@wavii.com.br", pass: "Wavii180279" } });
+					var email = 
+					{
+						from: 'comercial@wavii.com.br', // Quem enviou este e-mail
+						to: funcionarios[0].email, // Quem receberá
+						subject: 'Lembrança de Senha',  // Um assunto bacana :-) 
+						html: 'O usuário solicitou lembrança de senha:<br>' + "Usuário:" + usuarios[0].nome + "<br>Senha:" +  usuarios[0].senha // O conteúdo do e-mail
+					};
+					
+					transporte.sendMail(email, function(err, info){
+						if(err) {
+							console.log(err)
+						}
+					});
+					
+					usuariosDao.salvar(usuarios[0], function(error, result){});
+					empresaDao.listar(function(error, empresas){  
+						connection.end();      	
+						res.render('envioSenha', { validacao : [{'msg':'Senha enviada para o e-mail ' + funcionarios[0].email}], empresas : empresas });
+					});   
+				
+				});
+
+
+			} else {
+				empresaDao.listar(function(error, empresas){ 
+					connection.end();       	
+					res.render('envioSenha', { validacao : [{'msg':'Usuário Não Encontrado.'}], empresas : empresas });
+				});   
+			}
+		});
+	}
+    */
+}

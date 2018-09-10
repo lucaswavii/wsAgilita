@@ -4,7 +4,7 @@ function UsuarioDAO( connection ){
 
 UsuarioDAO.prototype.login = function( usuario, callback) {
 	
-	var sql = 	' SELECT usuario.id, usuario.nome, grupo.id as grupoid, grupo.nome as gruponome, pessoa.id as pessoaid, pessoa.nome as pessoanome, empresa.id as empresaid, empresa.fantasia as empresanome ' 
+	var sql = 	' SELECT usuario.id, usuario.nome, grupo.id as grupoid, grupo.nome as gruponome, pessoa.id as pessoaid, pessoa.nome as pessoanome, pessoa.pathImagem as logo, empresa.id as empresaid, empresa.fantasia as empresanome,  empresa.pathImagem as logoempresa' 
 	sql += 		' FROM USUARIO usuario '
 	sql += 		' inner join GRUPO grupo on ( grupo.id = usuario.grupo ) '
 	sql += 		' inner join PESSOA pessoa on ( pessoa.id = usuario.pessoa ) '

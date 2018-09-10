@@ -123,17 +123,19 @@ module.exports.salvar = function( application, req, res ){
         
     var dadosForms = req.body;
 
-    req.assert('nome', 'Nome é obrigatório!').notEmpty();       
+    var pathImagem = !dadosForms.pathImagem ? '/images/noImagem.png' : dadosForms.pathImagem;
 
-    var erros = req.validationErrors();
-
-    if(erros){
-        classificacaoDao.listar(function(error, classificacoes){
-            res.render('pessoa', {validacao: erros,  pessoas: [dadosForms], classificacoes:classificacoes, sessao: req.session.usuario});
-            return;
+    if ( req.files.imageFile ) {
+        let sampleFile = req.files.imageFile;
+        pathImagem = '/images/' + sampleFile.name;
+        sampleFile.mv('app/public/images/' + sampleFile.name , function(err) {
+            if (err)
+              return res.status(500).send(err);
         });
     }
-    
+   
+    dadosForms.pathImagem = pathImagem;
+   
     
     pessoaDao.salvar(dadosForms, function(error, result){
         

@@ -4,8 +4,16 @@ module.exports = function(application){
         res.render('login');
     });
 
+    application.get('/logout', function(req, res){		
+        application.app.controllers.usuario.logout(application, req, res);
+    });
+
     application.post('/acessar', function(req, res){		
         application.app.controllers.usuario.login(application, req, res);
+    });
+
+    application.post('/esqueci', function(req, res){		
+        application.app.controllers.usuario.esqueci(application, req, res);
     });
     
     application.get('/', function(req, res){
@@ -54,6 +62,10 @@ module.exports = function(application){
 
     application.get('/contrato', function(req, res){		
         application.app.controllers.contrato.index(application, req, res);
+    });
+
+    application.get('/conciliador', function(req, res){		
+        application.app.controllers.conciliador.index(application, req, res);
     });
 
     application.get('/configuracao', function(req, res){		
