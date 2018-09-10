@@ -60,6 +60,10 @@ module.exports = function(application){
         application.app.controllers.solucao.index(application, req, res);
     });
 
+    application.get('/scheduler', function(req, res){		
+        application.app.controllers.scheduler.index(application, req, res);
+    });
+
     application.get('/contrato', function(req, res){		
         application.app.controllers.contrato.index(application, req, res);
     });

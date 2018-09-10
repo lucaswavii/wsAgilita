@@ -79,6 +79,7 @@ consign()
 	.then('config/dbConnection.js')
 	.then('app/models')
 	.then('app/controllers')
+	.then('app/api')
 	.into(app);
 
 /* exportar o objeto app */

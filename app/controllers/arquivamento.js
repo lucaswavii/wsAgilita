@@ -67,32 +67,23 @@ module.exports.excluir = function( application, req, res ){
     }
 
     var connection = application.config.dbConnection();
-    var arquivamentoDao = new application.app.models.ArquivamentoDAO(connection);
+    var arquivamentoDao = new application.app.models.ArquivamentoDAO(connection);      
+    var fileClienteDao = new application.app.models.FileClienteDAO(connection);      
+    var fileAdminDao = new application.app.models.FileAdministradoraDAO(connection);
     
-    var id = req.params._id;
+    var idConciliador = req.params._id;
     
-    if( !id ) {
+    if( !idConciliador ) {
         res.render('arquivamento', { validacao : [ {'msg': 'ID de edição não foi informado.' }], arquivamentos : {}, sessao: req.session.usuario  });
         return;
     }
-
-    arquivamentoDao.excluir( id, function(error, result){
-        
-        if( error ) {
-
-            arquivamentoDao.listar(function(error, arquivamentos){ 
-
-                if(error.errno != undefined && error.errno == 1451) { 
-                    connection.end();
-                    res.render('arquivamento', { validacao : [ {'msg': "Não se pode excluir dados com vínculos em outras tabelas." }], arquivamentos : arquivamentos, sessao: req.session.usuario  });
-                } else {                
-                    res.render('arquivamento', { validacao : [ {'msg': error }], arquivamentos : arquivamentos, sessao: req.session.usuario   });
-                    return;
-                }
-            });
-        }
-        connection.end();
-        res.redirect("/arquivamento");
+    arquivamentoDao.editar( idConciliador, function(error, arquivamentos ){
+        var idContrato = arquivamentos[0].conciliador
+        arquivamentoDao.excluir( idConciliador, function(error, result){
+            console.log(error)
+            connection.end();
+            res.redirect('/arquivamento/' + idContrato );
+        });    
     });
 }
 
@@ -110,6 +101,7 @@ module.exports.salvar = function( application, req, res ){
     var arquivamentoDao = new application.app.models.ArquivamentoDAO(connection);      
     var fileClienteDao = new application.app.models.FileClienteDAO(connection);      
     var fileAdminDao = new application.app.models.FileAdministradoraDAO(connection);
+    var schedulerDao = new application.app.models.SchedulerDAO(connection);
 
 
     var dadosArquivamento = { 
@@ -155,23 +147,44 @@ module.exports.salvar = function( application, req, res ){
    
     
     arquivamentoDao.salvar(dadosArquivamento, function(error, result){
-        arqCliente.arquivamento = result.insertId
-        arqAdmin.arquivamento   = result.insertId
-        
-        fileClienteDao.salvar(arqCliente, function(error, arquivoCliente){
-            
-            fileAdminDao.salvar(arqAdmin, function(error, arquivoAdmin){
+        console.log(error);
+        if( result && result.insertId ) {
 
-                var schedule = require('node-schedule');
- 
-                var j = schedule.scheduleJob('0 1 * * *', function(){
-                    console.log('The answer to life, the universe, and everything!');
-                });
+            arqCliente.arquivamento = result.insertId
+            arqAdmin.arquivamento   = result.insertId
+            
+            var agenda = { 
+                            data: new Date(), 
+                            hora: null, 
+                            titulo:null, 
+                            tipo: 6, 
+                            agenda: new Date(), 
+                            agendah: null, 
+                            parametros: null, 
+                            habilitado:'S'
+                        }
+                        
+            fileClienteDao.salvar(arqCliente, function(error, arquivoCliente){
                 
-                connection.end();
-                res.redirect('/arquivamento/' + idConciliador );
+              
+                fileAdminDao.salvar(arqAdmin, function(error, arquivoAdmin){
+
+                    agenda.parametros = '{ "idArquivamento":'+ arqCliente.arquivamento + ', "idCliente":' + arquivoCliente.insertId + ' ,"idAdmin":' + arquivoAdmin.insertId +'}'                    
+                    
+                    schedulerDao.salvar(agenda, function(error, agendas){                       
+                        connection.end();
+                        res.redirect('/arquivamento/' + idConciliador );
+                    })
+
+                    
+                });
             });
-        });
+        } else {
+            connection.end();
+            res.redirect('/arquivamento/' + idConciliador );
+    
+        }
+
     });
      
 }

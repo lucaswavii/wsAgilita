@@ -7,6 +7,11 @@ module.exports = function(application){
     application.post('/arquivamentoSalvar/:_id', function(req, res){
         application.app.controllers.arquivamento.salvar(application, req, res);
     });
+    application.get('/arquivamentoExcluir/:_id', function(req, res){
+        application.app.controllers.arquivamento.excluir(application, req, res);
+    });
+
+    
 
     
 }

@@ -233,6 +233,172 @@
                                                 <a href="#" data-toggle="modal" data-target="#modal-remove-<%= arquivamentos[i].id %>" data-original-title="Remove"><i class="fa fa-trash-o"></i></a> 
                                             </div>
                                         </td>
+                                        <div class="modal fade" id="modal-edicao-<%= arquivamentos[i].id %>" encType="multipart/form-data">
+                                            <div class="modal-dialog">
+                                                <form role="form" action="/arquivamentoSalvar/<%= idConciliador %>" method="post">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                            <h4 class="modal-title">EDIÇÃO REGISTRO</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="box-group" id="accordion">
+                                                                <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+                                                                <div class="panel box box-primary">
+                                                                    <div class="box-header with-border">
+                                                                        <h4 class="box-title">
+                                                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                                                1# - Dados do Arquivo
+                                                                            </a>
+                                                                        </h4>
+                                                                    </div>
+                                                                    <div id="collapseOne" class="panel-collapse collapse in">
+                                                                        <div class="box-body">
+                                                                            <div class="container-fluid">
+                                                                                <div class="row">      
+                                                                                    <div class="form-group col-lg-6">
+                                                                                        <label>Id*:</label>
+                                                                                        <input type="text" class="form-control" name="id" id="id" placeholder="" autocomplete="off" data-toggle="tooltip" data-original-title="" value="<%= hoje %>" readonly="true">
+                                                                                    </div>                                              
+                                                                                    <div class="form-group col-lg-6" >
+                                                                                        <label>Status:</label>
+                                                                                        <select class="form-control" required="true" name="status" readonly="true">                                                                        
+                                                                                            <option value="1" <% arquivamentos[i].status == 1 ? 'selected' : '' %>>01 - Registrando</option>
+                                                                                            <option value="2" <% arquivamentos[i].status == 2 ? 'selected' : '' %>>02 - Não Processado</option>
+                                                                                            <option value="3" <% arquivamentos[i].status == 3 ? 'selected' : '' %>>03 - Processado</option>
+                                                                                            
+                                                                                        </select>
+                                                                                    </div>
+                                                                                            
+                                                                                    <div class="form-group col-lg-6">
+                                                                                        <label>Data*:</label>
+                                                                                        <input type="date" class="form-control" name="data" id="data" placeholder="" autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="<%= getFormattedDate(arquivamentos[i].data)  %>" readonly="true">
+                                                                                    </div>  
+                                                                                    
+                                                                                    <div class="form-group col-lg-6">
+                                                                                        <label>Hora*:</label>
+                                                                                        <input type="text" class="form-control" name="hora" id="hora" placeholder=""  autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="<%= arquivamentos[i].hora %>" readonly="true">
+                                                                                    </div> 
+                                                                                    
+                                                                                    <div class="form-group col-lg-6" >
+                                                                                        <label>Administradora:</label>
+                                                                                        <select class="form-control select2" required="true" name="administradora" data-toggle="tooltip" data-original-title="Informe o Grupo do usuário" style="width: 100%">
+                                                                                            <option value="">Selecione</option>
+                                                                                            <% if( administradoras.length > 0 ) {%>
+                                                                                                <% for(var e=0; e < administradoras.length; e++) {%>
+                                                                                                    <option value="<%= administradoras[e].id %>" <%= administradoras[e].id == arquivamentos[i].administradora ? 'selected': '' %>><%= administradoras[e].nome %></option>
+                                                                                                <% } %>
+                                                                                            <% } %>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="form-group col-lg-6" >
+                                                                                        <label>Tipo:</label>
+                                                                                        <select class="form-control select2" required="true" name="tipo" data-toggle="tooltip" data-original-title="Informe o Grupo do usuário" style="width: 100%">
+                                                                                            <option value="">Selecione</option>
+                                                                                            <% if( tipos.length > 0 ) {%>
+                                                                                                <% for(var e=0; e < tipos.length; e++) {%>
+                                                                                                    <option value="<%= tipos[e].id %>"  <%= tipos[e].id == arquivamentos[i].tipo ? 'selected': '' %></option>><%= tipos[e].nome %></option>
+                                                                                                <% } %>
+                                                                                            <% } %>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="form-group col-lg-6">
+                                                                                        <label>Início*:</label>
+                                                                                        <input type="date" class="form-control" name="inicio" id="inicio" placeholder="" required="true" value="<%= arquivamentos[i].inicio %>" autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" >
+                                                                                    </div>  
+                                                                                    <div class="form-group col-lg-6">
+                                                                                        <label>Fim*:</label>
+                                                                                        <input type="date" class="form-control" name="fim" id="fim" placeholder="" value="<%= arquivamentos[i].fim %>" required="true" autocomplete="off" MaxLength="200" data-toggle="tooltip" data-original-title="" required="true">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="panel box box-danger">
+                                                                    <div class="box-header with-border">
+                                                                        <h4 class="box-title">
+                                                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                                                                2# - Anexar Arquivo Cliente
+                                                                            </a>
+                                                                        </h4>
+                                                                    </div>
+                                                                    <div id="collapseTwo" class="panel-collapse collapse">
+                                                                        <div class="box-body">
+                                                                            <div class="form-group col-lg-6">
+                                                                                <label>Anexar Layout:</label>
+                                                                                <input class="form-control" name="pathCliente" id="pathCliente" placeholder="" readonly="true" value="">                                               
+                                                                                <input type="file" name="fileCliente" accept=".xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+                                                                            </div>  
+                                                                                
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="panel box box-success">
+                                                                    <div class="box-header with-border">
+                                                                        <h4 class="box-title">
+                                                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                                                                3# - Anexar Arquivo Administradora
+                                                                            </a>
+                                                                        </h4>
+                                                                    </div>
+                                                                    <div id="collapseThree" class="panel-collapse collapse">
+                                                                        <div class="box-body">
+                                                                            <div class="form-group col-lg-6">
+                                                                                <label>Anexar Layout:</label>
+                                                                                <input class="form-control" name="pathAdmin" id="pathAdmin" placeholder="" readonly="true" value="">                                               
+                                                                                <input type="file" name="fileAdmin" accept=".xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+                                                                            </div>  
+                                                                                                                                  
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                    
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/bandeira'">Cancelar</button>
+                                                            <button type="submit" class="btn btn-primary">Salvar</button>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </form>
+                                                <!-- /.modal-content -->
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
+                                        
+                                        <!-- /.modal -->
+
+                                        <!-- Excluir Registro -->
+                                        <div class="modal modal-danger fade" id="modal-remove-<%= arquivamentos[i].id %>">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                        <h4 class="modal-title">Excluir Registro</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Deseja deletar o registro?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/arquivamento/<%= idConciliador %>">
+                                                            Cancelar
+                                                        </a>
+                                                        <a class="btn btn-outline" href="/arquivamentoExcluir/<%=  arquivamentos[i].id  %>">
+                                                            Excluir
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- /.modal-content -->
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
+                                        <!-- /.modal -->
                                     </tr>
                                 <% } %>
                             </tbody>

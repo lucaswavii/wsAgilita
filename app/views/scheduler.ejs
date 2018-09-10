@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <% include /templates/head %>
+    </head>
+
+    <% function leftPad(value, totalWidth, paddingChar) { %>
+    <%      var length = totalWidth - value.toString().length + 1; %>
+    <%      return Array(length).join(paddingChar || '0') + value; %>
+    <%  }; %>
+    <% var now = new Date() %>
+    <% var hoje = leftPad(now.getDate(), 2) + '/' + leftPad((now.getMonth() + 1), 2) + '/' +  leftPad(now.getFullYear(), 4) %>
+    <% var hora = leftPad(now.getHours(),2) + ":" + leftPad(now.getMinutes(),2) %>
+    <% var hoje = leftPad(now.getFullYear(), 4) + '-' + leftPad((now.getMonth() + 1), 2)  + '-' +   leftPad(now.getDate(), 2)   %>
+    
+    <% function getFormattedDate(date) { %>
+        <%  var year = date.getFullYear(); %>
+        <%  var month = (1 + date.getMonth()).toString(); %>
+        <%  month = month.length > 1 ? month : '0' + month; %>
+        <%  var day = date.getDate().toString(); %>
+        <%  day = day.length > 1 ? day : '0' + day; %>
+        <%  return day + '/' + month + '/' + year %>
+    <% } %>
+
+    <body class="sidebar-mini skin-yellow">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+
+            <% include /templates/header %>
+            <div class="content-wrapper">
+                <!-- escrever conteúdo do sistema -->
+                <section class="content-header">
+                    <h1>
+                        CADASTRO DE SCHEDULERS
+                        <small>LISTAGEM DE SCHEDULERS</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-dashboard"></i> Dashboard</a>
+                        </li>
+                        <li class="active">Schedulers</li>
+                    </ol>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+
+                    <!-- Default box -->
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">
+                                <a href="#" data-toggle="modal" data-target="#modal-default"><i class="fa fa-plus-square"></i></a>    
+                                INCLUIR NOVO REGISTRO
+                            </h3>
+                        
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>                                
+                        </div>
+                        <div class="modal fade" id="modal-default">
+                            <div class="modal-dialog">
+                                <form role="form" action="/schedulerSalvar" method="post">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <h4 class="modal-title">NOVO REGISTRO</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Data*:</label>
+                                                        <input type="date" class="form-control" name="data" id="data" placeholder="" autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="<%= hoje %>" readonly="true">
+                                                    </div>  
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Hora*:</label>
+                                                        <input type="text" class="form-control" name="hora" id="hora" placeholder=""  autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="<%= hora %>" readonly="true">
+                                                    </div>  
+                                                    <div class="form-group col-lg-12">
+                                                        <label>Título*:</label>
+                                                        <input type="text" class="form-control" name="titulo" id="titulo" placeholder=""  autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="">
+                                                    </div>  
+                                                    <div class="form-group col-lg-12" >
+                                                        <label>Tipo:</label>
+                                                        <select class="form-control" required="true" name="contrato" data-toggle="tooltip" data-original-title="" style="width: 100%">
+                                                            <option value="1">Anual</option>
+                                                            <option value="2">Diário</option>
+                                                            <option value="3">Intervalo</option>
+                                                            <option value="4">Mensal</option>
+                                                            <option value="5">Semanal</option>
+                                                            <option value="6">Uma Vez</option>
+                                                        </select>
+                                                    </div> 
+                                                    
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Agenda Data*:</label>
+                                                        <input type="date" class="form-control" name="agenda" id="agenda" placeholder="" autocomplete="off" required="true">
+                                                    </div>  
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Agenda Hora*:</label>
+                                                        <input type="text" class="form-control" name="agendah" id="agendah" placeholder=""  autocomplete="off" required="true">
+                                                    </div>  
+                                            
+                                                    <div class="form-group col-lg-12">
+                                                        <label>Parametros:</label>
+                                                        <textarea class="form-control" name="parametros", id="parametros"  rows="3"></textarea>
+                                                    </div>
+
+                                                    <div class="form-group col-lg-12" >
+                                                        <label>Habilitado:</label>
+                                                        <select class="form-control" required="true" name="habilitado" data-toggle="tooltip" data-original-title="" style="width: 100%">
+                                                            <option value="S">Sim</option>
+                                                            <option value="N">Não</option>
+                                                            
+                                                        </select>
+                                                    </div> 
+                                                    <div class="form-group col-lg-12">
+                                                        <label>Resultado:</label>
+                                                        <textarea class="form-control" name="resultado", id="resultado"  rows="3" readonly='true'></textarea>
+                                                    </div>
+                                                    <div class="form-group col-lg-6">
+                                                        <label>Próxima Execução:</label>
+                                                        <input type="date" class="form-control" name="proximaexecucao" id="proximaexecucao" placeholder="" autocomplete="off" required="true" readonly='true'>
+                                                    </div> 
+                                                    
+                                                    
+                                                </div>
+                                            </div>                                        
+                                        </div>
+                                        
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="window.location.href='/scheduler'">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Salvar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
+
+                        <div class="box-body">
+                            <table id="grddados" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Tipo</th>
+                                        <th>Resultado</th>
+                                        <th>
+                                            <div class="tools">
+                                                <a data-toggle="tooltip" data-original-title="Editar Registro"><i class="fa fa-edit"></i></a>
+                                                <a data-toggle="tooltip" data-original-title="Excluir Registro"><i class="fa fa-trash-o"></i></a> 
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for( var i = 0; i < schedulers.length; i++) {%>
+                                       
+                                        
+                                        <tr>
+                                            
+                                            <td><%= schedulers[i].titulo %></td>
+                                            <td><%= schedulers[i].data %></td>
+                                            <td><%= schedulers[i].hora %></td>
+                                            <td><%= schedulers[i].resultado %></td>
+                                            <td>
+                                                <div class="tools">
+                                                    <a href="#" data-toggle="modal" data-target="#modal-edicao-<%= schedulers[i].id %>"><i class="fa fa-edit"></i></a>
+                                                    <a href="#" data-toggle="modal" data-target="#modal-remove-<%= schedulers[i].id %>"><i class="fa fa-trash-o"></i></a> 
+                                                </div>
+                                            </td>
+                                            <div class="modal fade" id="modal-edicao-<%= schedulers[i].id %>">
+                                                <div class="modal-dialog">
+                                                    <form role="form" action="/schedulerSalvar" method="post">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                                <h4 class="modal-title">EDIÇÃO REGISTRO</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        
+                                                                        <div class="form-group col-lg-2">
+                                                                            <label>Id:</label>
+                                                                            <input type="text"  readonly="true" class="form-control" name="id" id="id" placeholder="" MaxLength="200" value="<%= schedulers[i].id ? schedulers[i].id : '' %>">
+                                                                        </div>                                                     
+                                                                    </div>
+                                                                     <div class="row">
+                                                    
+                                                                        <div class="form-group col-lg-6">
+                                                                            <label>Nome*:</label>
+                                                                            <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= schedulers[i].nome ? schedulers[i].nome : '' %>" autocomplete="off" required="true" MaxLength="200" data-toggle="tooltip" data-original-title="Informe o NOME do usuário" autofocus >
+                                                                        </div>         
+                                                                        <div class="form-group col-lg-12" >
+                                                                            <label>Tipo:</label>
+                                                                            <select class="form-control select2" required="true" name="grupo" data-toggle="tooltip" data-original-title="Informe o Grupo do usuário" style="width: 100%">
+                                                                                <option value="">Selecione</option>
+                                                                                <% if( tipos.length > 0 ) {%>
+                                                                                    <% for(var e=0; e < tipos.length; e++) {%>
+                                                                                        <option value="<%= tipos[e].id %>" <%= tipo.length > 0 && tipo[0].id ==  tipos[e].id ? 'selected' : '' %>><%= tipos[e].nome %></option>
+                                                                                    <% } %>
+                                                                                <% } %>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                   
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="reset" class="btn btn-default pull-left" onclick="window.location.href='/scheduler'">Cancelar</button>
+                                                                <button type="submit" class="btn btn-primary">Salvar</button>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </form>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                            
+                                            <!-- /.modal -->
+
+                                            <!-- Excluir Registro -->
+                                            <div class="modal modal-danger fade" id="modal-remove-<%= schedulers[i].id %>">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                            <h4 class="modal-title">Excluir Registro</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Deseja deletar o registro?</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-outline pull-left"  data-dismiss="modal" href="/scheduler">
+                                                                Cancelar
+                                                            </a>
+                                                            <a class="btn btn-outline" href="/schedulerExcluir/<%=  schedulers[i].id   %>">
+                                                                Excluir
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                            <!-- /.modal -->
+                                        </tr>
+                                    <% } %>    
+                                </tbody>
+                            </table>
+                        
+                            <div class="ajax-content">
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer">
+                        
+                        </div>
+                        <!-- /.box-footer-->
+                    </div>
+                    <!-- /.box -->
+
+                </section>
+                <!-- /.content -->
+
+            </div>
+
+            <!-- /.content-wrapper -->
+            <% include /templates/footer %>
+
+            <div class="control-sidebar-bg"></div>
+        </div>
+    </body>
+    <% include /templates/scripts %>
+
+</html>
