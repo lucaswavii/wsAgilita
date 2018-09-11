@@ -68,7 +68,8 @@
                                                         <% if( empresas.length > 0 ) {%>
                                                             <% for(var e=0; e < empresas.length; e++) {%>
                                                                 <% var empresa = configuracoes.filter(function(value){ return configuracoes.empresa == empresas[e].id;})  %> 
-                                                                <% if( !empresa ) { %>
+                                                                <% console.log(empresa)%>
+                                                                <% if( empresa.length == 0 ) { %>
                                                                     <option value="<%= empresas[e].id %>"><%= empresas[e].fantasia %></option>
                                                                 <% } %>
                                                             <% } %>

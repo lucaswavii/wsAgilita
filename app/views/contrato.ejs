@@ -89,7 +89,7 @@
                                                             <option value="">Selecione</option>
                                                             <% if( pessoas.length > 0 ) {%>
                                                                 <% for(var e=0; e < pessoas.length; e++) {%>
-                                                                    <% if( sessao.configuracao.classificacao == pessoas[e].classificacao ) { %>
+                                                                    <% if( sessao.configuracao && sessao.configuracao.classificacao == pessoas[e].classificacao ) { %>
                                                                     <option value="<%= pessoas[e].id %>"><%= pessoas[e].nome %></option>
                                                                    <% } %>
                                                                 <% } %>

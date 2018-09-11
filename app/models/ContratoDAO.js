@@ -3,7 +3,7 @@ function ContratoDAO( connection ){
 }
 
 ContratoDAO.prototype.listar = function( callback) {
-	this._connection.query('select * from CONTRATO where inicio < now() and fim >= now() order by id', callback);	
+	this._connection.query('select * from CONTRATO where finalizar is null order by id', callback);	
 }
 
 ContratoDAO.prototype.salvar = function( contrato, callback) {	

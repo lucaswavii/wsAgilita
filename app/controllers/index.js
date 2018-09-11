@@ -10,8 +10,9 @@ module.exports.index = function( application, req, res ){
     var cron = require('node-cron');
  
     var task = cron.schedule('* * * * *', function() {
-        var scheduler = new Schedulers( connection, req, res );
-        scheduler.importacaoXlsCliente( application );
+        var scheduler = new Schedulers( application, connection, req, res );
+        scheduler.importacaoXlsCliente();
+        scheduler.importacaoXlsAdmin();
     });
 
     res.render('index', { validacao : {}, sessao: req.session.usuario  });

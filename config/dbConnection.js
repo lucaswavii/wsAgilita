@@ -2,9 +2,9 @@ var mysql = require('mysql');
 // Configuração do banco de dados
 var connMysql = function() {
 	return mysql.createConnection({
-			host : '18.218.132.80',
+			host : 'localhost',
 			user: 'root',
-			password: 'Wa180279',
+			password: '123456',
 			database: 'wsagilita'
 	});
 }
