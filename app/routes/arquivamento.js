@@ -11,7 +11,8 @@ module.exports = function(application){
         application.app.controllers.arquivamento.excluir(application, req, res);
     });
 
-    
-
-    
+    application.get('/conciliar/:_id', function(req, res){
+        application.app.controllers.arquivamento.conciliar(application, req, res);
+    });
+        
 }

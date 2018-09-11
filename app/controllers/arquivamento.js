@@ -87,12 +87,85 @@ module.exports.excluir = function( application, req, res ){
     });
 }
 
+module.exports.conciliar = function( application, req, res ){
+
+    if( req.session.usuario == undefined ) {
+        res.redirect("/login");
+        return;			
+    }
+    var connection = application.config.dbConnection();
+    var arquivamentoDao = new application.app.models.ArquivamentoDAO(connection);
+    var fileClienteDao = new application.app.models.FileClienteDAO(connection);      
+    var fileAdminDao = new application.app.models.FileAdministradoraDAO(connection);
+    var layoutCliente = new application.app.models.LayoutClienteDAO(connection);
+    var layoutAdmin = new application.app.models.LayoutAdministradoraDAO(connection);
+    var idConciliador = req.params._id;
+
+    var filter = require('filter-object');
+
+    function buscaDados(registro, layout ) {
+        var criterioUm   = layout.filter(function(value){ 
+                return  value.administradora ==  registro.administradora &&
+                        value.tipocartao == registro.tipocartao &&
+                        value.parcelamento == registro.parcelamento &&
+                        value.datavenda == registro.datavenda &&
+                        value.datarecebimento == registro.datarecebimento &&
+                        value.cnpj == registro.cnpj &&
+                        ( value.valor == registro.valor ||  value.valor >= registro.valor -2 ) &&
+                        value.bandeira == registro.bandeira &&
+                        value.parcelas == registro.parcelas;   
+        });
+        return criterioUm;
+    }
+
+    arquivamentoDao.editar( idConciliador, function(error, arquivamentos ){
+       
+        if( arquivamentos.length > 0 ) {
+            
+            fileClienteDao.abre( arquivamentos[0].id, function(error, fileCliente ){
+               
+                fileAdminDao.abre( arquivamentos[0].id, function(error, fileAdmin ){
+                    
+                    layoutCliente.listar( fileCliente[0].id , function(error, layoutCliente ){
+                      
+                        layoutAdmin.listar( fileAdmin[0].id , function(error, layoutAdmin ){
+                         
+                            var quantidade = 0;
+                            for (let index = 0; index < layoutCliente.length; index++) {
+                                const element = layoutCliente[index];
+                                
+                                var criterioUm = buscaDados(element, layoutAdmin );
+
+                                if( criterioUm && criterioUm.length > 0 ) {
+                                    quantidade++
+                                    console.log("Crietio Um : " + criterioUm[0].id + " - " + element.id )         
+                                }
+
+                               
+                            } 
+                          
+                            connection.end();
+                            res.redirect('/arquivamento/' + idConciliador );
+
+                        });
+                    }); 
+                });
+            });
+        }    
+
+    });
+
+}
+
 module.exports.salvar = function( application, req, res ){
     
     if( req.session.usuario == undefined ) {
         res.redirect("/login");
         return;			
     }
+    
+    const moment = require('moment') 
+
     var dadosForms = req.body;
 
     var idConciliador = req.params._id;
@@ -147,19 +220,19 @@ module.exports.salvar = function( application, req, res ){
    
     
     arquivamentoDao.salvar(dadosArquivamento, function(error, result){
-        console.log(error);
+        
         if( result && result.insertId ) {
 
             arqCliente.arquivamento = result.insertId
             arqAdmin.arquivamento   = result.insertId
-            
+            var hoje = new Date();
             var agenda = { 
-                            data: new Date(), 
-                            hora: null, 
-                            titulo:null, 
+                            data: hoje, 
+                            hora: moment(hoje).utc().format("hh:mm"), 
+                            titulo:'Tarefa Importação de Arquivo', 
                             tipo: 6, 
-                            agenda: new Date(), 
-                            agendah: null, 
+                            agenda: hoje, 
+                            agendah: moment(hoje).utc().format("hh:mm"), 
                             parametros: null, 
                             habilitado:'S'
                         }

@@ -150,9 +150,13 @@
                             <table id="grddados" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Nome</th>
-                                        <th>Tipo</th>
-                                        <th>Resultado</th>
+                                        <th>Data</th>
+                                        <th>Hora</th>
+                                        <th>Título</th>
+                                        <th>Dt Agenda</th>
+                                        <th>Hs Agenda</th>
+                                        <th>Parametros</th>
+                                        <th>Resultado</th> 
                                         <th>
                                             <div class="tools">
                                                 <a data-toggle="tooltip" data-original-title="Editar Registro"><i class="fa fa-edit"></i></a>
@@ -166,10 +170,12 @@
                                        
                                         
                                         <tr>
-                                            
-                                            <td><%= schedulers[i].titulo %></td>
-                                            <td><%= schedulers[i].data %></td>
+                                            <td><%= getFormattedDate(schedulers[i].data) %></td>
                                             <td><%= schedulers[i].hora %></td>
+                                            <td><%= schedulers[i].titulo %></td>
+                                            <td><%= getFormattedDate(schedulers[i].agenda) %></td>
+                                            <td><%= schedulers[i].agendah %></td>
+                                            <td><%= schedulers[i].parametros %></td>
                                             <td><%= schedulers[i].resultado %></td>
                                             <td>
                                                 <div class="tools">
@@ -196,24 +202,65 @@
                                                                             <input type="text"  readonly="true" class="form-control" name="id" id="id" placeholder="" MaxLength="200" value="<%= schedulers[i].id ? schedulers[i].id : '' %>">
                                                                         </div>                                                     
                                                                     </div>
-                                                                     <div class="row">
+                                                                    <div class="row">
                                                     
-                                                                        <div class="form-group col-lg-6">
-                                                                            <label>Nome*:</label>
-                                                                            <input type="text" class="form-control" name="nome" id="nome" placeholder="" value="<%= schedulers[i].nome ? schedulers[i].nome : '' %>" autocomplete="off" required="true" MaxLength="200" data-toggle="tooltip" data-original-title="Informe o NOME do usuário" autofocus >
-                                                                        </div>         
-                                                                        <div class="form-group col-lg-12" >
-                                                                            <label>Tipo:</label>
-                                                                            <select class="form-control select2" required="true" name="grupo" data-toggle="tooltip" data-original-title="Informe o Grupo do usuário" style="width: 100%">
-                                                                                <option value="">Selecione</option>
-                                                                                <% if( tipos.length > 0 ) {%>
-                                                                                    <% for(var e=0; e < tipos.length; e++) {%>
-                                                                                        <option value="<%= tipos[e].id %>" <%= tipo.length > 0 && tipo[0].id ==  tipos[e].id ? 'selected' : '' %>><%= tipos[e].nome %></option>
-                                                                                    <% } %>
-                                                                                <% } %>
-                                                                            </select>
+                                                                            <div class="form-group col-lg-6">
+                                                                                <label>Data*:</label>
+                                                                                <input type="date" class="form-control" name="data" id="data" placeholder="" autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="<%= hoje %>" readonly="true">
+                                                                            </div>  
+                                                                            <div class="form-group col-lg-6">
+                                                                                <label>Hora*:</label>
+                                                                                <input type="text" class="form-control" name="hora" id="hora" placeholder=""  autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="<%= hora %>" readonly="true">
+                                                                            </div>  
+                                                                            <div class="form-group col-lg-12">
+                                                                                <label>Título*:</label>
+                                                                                <input type="text" class="form-control" name="titulo" id="titulo" placeholder=""  autocomplete="off" MaxLength="200" required="true" data-toggle="tooltip" data-original-title="" value="">
+                                                                            </div>  
+                                                                            <div class="form-group col-lg-12" >
+                                                                                <label>Tipo:</label>
+                                                                                <select class="form-control" required="true" name="contrato" data-toggle="tooltip" data-original-title="" style="width: 100%">
+                                                                                    <option value="1">Anual</option>
+                                                                                    <option value="2">Diário</option>
+                                                                                    <option value="3">Intervalo</option>
+                                                                                    <option value="4">Mensal</option>
+                                                                                    <option value="5">Semanal</option>
+                                                                                    <option value="6">Uma Vez</option>
+                                                                                </select>
+                                                                            </div> 
+                                                                            
+                                                                            <div class="form-group col-lg-6">
+                                                                                <label>Agenda Data*:</label>
+                                                                                <input type="date" class="form-control" name="agenda" id="agenda" placeholder="" autocomplete="off" required="true">
+                                                                            </div>  
+                                                                            <div class="form-group col-lg-6">
+                                                                                <label>Agenda Hora*:</label>
+                                                                                <input type="text" class="form-control" name="agendah" id="agendah" placeholder=""  autocomplete="off" required="true">
+                                                                            </div>  
+                                                                    
+                                                                            <div class="form-group col-lg-12">
+                                                                                <label>Parametros:</label>
+                                                                                <textarea class="form-control" name="parametros", id="parametros"  rows="3"></textarea>
+                                                                            </div>
+                        
+                                                                            <div class="form-group col-lg-12" >
+                                                                                <label>Habilitado:</label>
+                                                                                <select class="form-control" required="true" name="habilitado" data-toggle="tooltip" data-original-title="" style="width: 100%">
+                                                                                    <option value="S">Sim</option>
+                                                                                    <option value="N">Não</option>
+                                                                                    
+                                                                                </select>
+                                                                            </div> 
+                                                                            <div class="form-group col-lg-12">
+                                                                                <label>Resultado:</label>
+                                                                                <textarea class="form-control" name="resultado", id="resultado"  rows="3" readonly='true'></textarea>
+                                                                            </div>
+                                                                            <div class="form-group col-lg-6">
+                                                                                <label>Próxima Execução:</label>
+                                                                                <input type="date" class="form-control" name="proximaexecucao" id="proximaexecucao" placeholder="" autocomplete="off" required="true" readonly='true'>
+                                                                            </div> 
+                                                                            
+                                                                            
                                                                         </div>
-                                                                    </div>
                                                                    
                                                                 </div>
                                                             </div>

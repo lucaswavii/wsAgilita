@@ -2,8 +2,8 @@ function LayoutClienteDAO( connection ){
 	this._connection = connection; 
 }
 
-LayoutClienteDAO.prototype.listar = function( callback) {
-	this._connection.query('select * from LAYOUTCLIENTE order by id', callback);	
+LayoutClienteDAO.prototype.listar = function( arquivo, callback) {
+	this._connection.query('select * from LAYOUTCLIENTE where arquivocliente = ? order by id', arquivo, callback);	
 }
 
 LayoutClienteDAO.prototype.salvar = function( layout, callback) {	

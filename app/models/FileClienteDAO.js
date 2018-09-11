@@ -7,6 +7,7 @@ FileClienteDAO.prototype.listar = function( arquivamento, callback) {
 }
 
 FileClienteDAO.prototype.salvar = function( fileCliente, callback) {	
+	
 	if( !fileCliente.id ) {
 		this._connection.query('insert into ARQUIVOCLIENTE set ?', fileCliente, callback);
 	} else {
@@ -16,6 +17,10 @@ FileClienteDAO.prototype.salvar = function( fileCliente, callback) {
 
 FileClienteDAO.prototype.editar = function( id, callback) {
 	this._connection.query('select * from ARQUIVOCLIENTE where id = ?', id, callback);
+}
+
+FileClienteDAO.prototype.abre = function( id, callback) {
+	this._connection.query('select * from ARQUIVOCLIENTE where arquivamento = ?', id, callback);
 }
 
 FileClienteDAO.prototype.excluir = function( id, callback) {

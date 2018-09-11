@@ -3,7 +3,7 @@ function FileAdministradoraDAO( connection ){
 }
 
 FileAdministradoraDAO.prototype.listar = function( arquivamento, callback) {
-	this._connection.query('select * from ARQUIVOADMINISTRADORA order by id', arquivamento, callback);	
+	this._connection.query('select * from ARQUIVOADMINISTRADORA where arquivamento = ? order by id', arquivamento, callback);	
 }
 
 FileAdministradoraDAO.prototype.salvar = function( fileAdministradora, callback) {	
@@ -16,6 +16,10 @@ FileAdministradoraDAO.prototype.salvar = function( fileAdministradora, callback)
 
 FileAdministradoraDAO.prototype.editar = function( id, callback) {
 	this._connection.query('select * from ARQUIVOADMINISTRADORA where id = ?', id, callback);
+}
+
+FileAdministradoraDAO.prototype.abre = function( id, callback) {
+	this._connection.query('select * from ARQUIVOADMINISTRADORA where arquivamento = ?', id, callback);
 }
 
 FileAdministradoraDAO.prototype.excluir = function( id, callback) {

@@ -2,8 +2,8 @@ function LayoutAdministradoraDAO( connection ){
 	this._connection = connection; 
 }
 
-LayoutAdministradoraDAO.prototype.listar = function( callback) {
-	this._connection.query('select * from LAYOUTADMINISTRADORA order by id', callback);	
+LayoutAdministradoraDAO.prototype.listar = function( arquivo, callback) {
+	this._connection.query('select * from LAYOUTADMINISTRADORA where arquivamentoadministradora = ? order by id', arquivo, callback);	
 }
 
 LayoutAdministradoraDAO.prototype.salvar = function( layout, callback) {	
