@@ -99,24 +99,13 @@ module.exports.conciliar = function( application, req, res ){
     var fileAdminDao = new application.app.models.FileAdministradoraDAO(connection);
     var layoutCliente = new application.app.models.LayoutClienteDAO(connection);
     var layoutAdmin = new application.app.models.LayoutAdministradoraDAO(connection);
+    var conciliacaoDao = new application.app.models.ConciliacaoDAO(connection)
+    
     var idConciliador = req.params._id;
 
     var filter = require('filter-object');
 
-    function buscaDados(registro, layout ) {
-        var criterioUm   = layout.filter(function(value){ 
-                return  value.administradora ==  registro.administradora &&
-                        value.tipocartao == registro.tipocartao &&
-                        value.parcelamento == registro.parcelamento &&
-                        value.datavenda == registro.datavenda &&
-                        value.datarecebimento == registro.datarecebimento &&
-                        value.cnpj == registro.cnpj &&
-                        ( value.valor == registro.valor ||  value.valor >= registro.valor -2 ) &&
-                        value.bandeira == registro.bandeira &&
-                        value.parcelas == registro.parcelas;   
-        });
-        return criterioUm;
-    }
+   
 
     arquivamentoDao.editar( idConciliador, function(error, arquivamentos ){
        
@@ -126,28 +115,40 @@ module.exports.conciliar = function( application, req, res ){
                
                 fileAdminDao.abre( arquivamentos[0].id, function(error, fileAdmin ){
                     
-                    layoutCliente.listar( fileCliente[0].id , function(error, layoutCliente ){
-                      
-                        layoutAdmin.listar( fileAdmin[0].id , function(error, layoutAdmin ){
-                         
-                            var quantidade = 0;
-                            for (let index = 0; index < layoutCliente.length; index++) {
-                                const element = layoutCliente[index];
-                                
-                                var criterioUm = buscaDados(element, layoutAdmin );
-
-                                if( criterioUm && criterioUm.length > 0 ) {
-                                    quantidade++
-                                    console.log("Crietio Um : " + criterioUm[0].id + " - " + element.id )         
+                    layoutCliente.listar( fileCliente[0].id , function(error, layoutClientes ){
+                       
+                        for (let index = 0; index < layoutClientes.length; index++) {
+                            const element = layoutClientes[index];
+                            
+                            layoutAdmin.buscar( fileAdmin[0], element , function(error, conciliacao ){
+                                for (let i = 0; i < conciliacao.length; i++) {
+                                    const registroAdm = conciliacao[i];
+                                    var registro = { 
+                                                        status: 1, 
+                                                        cnpj:element.cnpj,
+                                                        administradora_nome: element.administradora,
+                                                        tipocartao_nome: element.tipocartao,
+                                                        tipoparcela_nome: element.tipoparcela,
+                                                        datavenda: element.datavenda,
+                                                        datarecebimento:element.datarecebimento,
+                                                        valor: element.valor,
+                                                        desconto: registroAdm.desconto,
+                                                        valorbruto:registroAdm.valorbruto,
+                                                        valorliquido: registroAdm.valorliquido,
+                                                        bandeira_nome: element.bandeira,
+                                                        parcelas:element.parcelas,
+                                                        cliente: element.id,
+                                                        admin: registroAdm.id
+                                                    }
+                                    console.log(registro)
                                 }
+                            });
+                        } 
+                        
+                        //connection.end();
+                        //res.redirect('/arquivamento/' + idConciliador );
 
-                               
-                            } 
-                          
-                            connection.end();
-                            res.redirect('/arquivamento/' + idConciliador );
-
-                        });
+                        
                     }); 
                 });
             });

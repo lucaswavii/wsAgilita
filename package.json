@@ -12,6 +12,7 @@
     "crypto": "0.0.3",
     "dateformat": "^3.0.2",
     "datejs": "^1.0.0-rc3",
+    "deep-filter-object": "^1.0.0",
     "ejs": "^2.5.7",
     "ejs-locals": "^1.0.2",
     "escpos": "^2.4.5",
