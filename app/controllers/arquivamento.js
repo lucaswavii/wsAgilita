@@ -236,7 +236,7 @@ module.exports.conciliar = function( application, req, res ){
                                                                     console.log(element.id + " - " + i)
                                                                     
                                                                     conciliacaoDao.salvar(registro,function(error, result ){
-                                                                        console.log(registro)
+                                                                        console.log(error)
                                                                         arquivamentos[0].status = 4;
                                                                         arquivamentoDao.salvar( arquivamentos[0], function(error, resultadp ){});
                                                                     });
