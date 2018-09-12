@@ -8,7 +8,7 @@ ConciliacaoDAO.prototype.listar = function( callback) {
 
 ConciliacaoDAO.prototype.salvar = function( conciliacao, callback) {	
 	if( !conciliacao.id ) {
-		this._connection.query('insert into CONCILIACAO set ?', CONCILIACAO, callback);
+		this._connection.query('insert into CONCILIACAO set ?', conciliacao, callback);
 	} else {
 		this._connection.query('update CONCILIACAO set ? where id = ?', [ conciliacao, conciliacao.id], callback);	
 	}

@@ -6,12 +6,41 @@ module.exports.index = function( application, req, res ){
 		  res.redirect("/login");
 		  return;			
     }
-    var connection = application.config.dbConnection();
+    
     var cron = require('node-cron');
- 
+
     var task1 = cron.schedule('* * * * *', function() {
-        var scheduler = new Schedulers( application, connection, req, res );
-        scheduler.importacaoXls();       
+
+        var connection = application.config.dbConnection();
+        var schedulerDao = new application.app.models.SchedulerDAO(connection);
+        schedulerDao.listar(function(error, schedulers){
+            
+            if( schedulers && schedulers.length > 0 ) {
+            
+                for (let index = 0; index < schedulers.length; index++) {
+                    try {
+
+                        var tarefa = schedulers[index];
+                        tarefa.fechamento = new Date();
+
+                        schedulerDao.salvar(tarefa, function(error, schedulers){
+                           
+                            var con = application.config.dbConnection();
+
+                            var scheduler = new Schedulers( application, con, req, res );
+                            scheduler.importacaoXls( tarefa );
+                            connection.end();  
+                           
+                        }); 
+                            
+                    } catch (error) {
+                        con.end()
+                    }
+                }
+            } 
+            
+        });
+    
     });
     task1.start();
    

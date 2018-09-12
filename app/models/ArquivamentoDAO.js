@@ -2,6 +2,15 @@ function ArquivamentoDAO( connection ){
 	this._connection = connection; 
 }
 
+ArquivamentoDAO.prototype.taxas = function( id, callback) {
+	var sql  = ' SELECT taxa.* FROM ARQUIVAMENTO arquivamento '
+	sql 	+= ' inner join CONCILIADOR conciliador on ( conciliador.id = arquivamento.conciliador ) '
+	sql 	+= ' inner join CONTRATO contrato on ( contrato.id = conciliador.contrato) '
+	sql 	+= ' inner join TAXA taxa on ( taxa.contrato = contrato.id)'
+	sql 	+= ' where arquivamento.id = ? ' 
+	this._connection.query(sql, id, callback);
+}
+
 ArquivamentoDAO.prototype.listar = function( callback) {
 	this._connection.query('select * from ARQUIVAMENTO order by id', callback);	
 }

@@ -93,65 +93,172 @@ module.exports.conciliar = function( application, req, res ){
         res.redirect("/login");
         return;			
     }
+
     var connection = application.config.dbConnection();
     var arquivamentoDao = new application.app.models.ArquivamentoDAO(connection);
     var fileClienteDao = new application.app.models.FileClienteDAO(connection);      
     var fileAdminDao = new application.app.models.FileAdministradoraDAO(connection);
     var layoutCliente = new application.app.models.LayoutClienteDAO(connection);
     var layoutAdmin = new application.app.models.LayoutAdministradoraDAO(connection);
-    var conciliacaoDao = new application.app.models.ConciliacaoDAO(connection)
+    var conciliacaoDao = new application.app.models.ConciliacaoDAO(connection);
     
+    var pessoaDao = new application.app.models.PessoaDAO(connection);
+    var administradoraDao = new application.app.models.AdministradoraDAO(connection);
+    var tipocartaoDao = new application.app.models.TipoCartaoDAO(connection);
+    var tipoparcelaDao = new application.app.models.TipoParcelaDAO(connection);
+    var bandeiraDao = new application.app.models.BandeiraDAO(connection);
+    
+
     var idConciliador = req.params._id;
 
-    var filter = require('filter-object');
+    var objAdmin = new Object();
+    var objCliente = new Object();
 
-   
+    var filter = require('filter-object');
 
     arquivamentoDao.editar( idConciliador, function(error, arquivamentos ){
        
         if( arquivamentos.length > 0 ) {
-            
-            fileClienteDao.abre( arquivamentos[0].id, function(error, fileCliente ){
-               
-                fileAdminDao.abre( arquivamentos[0].id, function(error, fileAdmin ){
-                    
-                    layoutCliente.listar( fileCliente[0].id , function(error, layoutClientes ){
-                       
-                        for (let index = 0; index < layoutClientes.length; index++) {
-                            const element = layoutClientes[index];
-                            
-                            layoutAdmin.buscar( fileAdmin[0], element , function(error, conciliacao ){
-                                for (let i = 0; i < conciliacao.length; i++) {
-                                    const registroAdm = conciliacao[i];
-                                    var registro = { 
-                                                        status: 1, 
-                                                        cnpj:element.cnpj,
-                                                        administradora_nome: element.administradora,
-                                                        tipocartao_nome: element.tipocartao,
-                                                        tipoparcela_nome: element.tipoparcela,
-                                                        datavenda: element.datavenda,
-                                                        datarecebimento:element.datarecebimento,
-                                                        valor: element.valor,
-                                                        desconto: registroAdm.desconto,
-                                                        valorbruto:registroAdm.valorbruto,
-                                                        valorliquido: registroAdm.valorliquido,
-                                                        bandeira_nome: element.bandeira,
-                                                        parcelas:element.parcelas,
-                                                        cliente: element.id,
-                                                        admin: registroAdm.id
-                                                    }
-                                    console.log(registro)
-                                }
-                            });
-                        } 
-                        
-                        //connection.end();
-                        //res.redirect('/arquivamento/' + idConciliador );
 
+            arquivamentoDao.taxas( arquivamentos[0].id, function(error, taxas ){
+
+                pessoaDao.listar(function(error, pessoas ){
+                    
+                    administradoraDao.listar(function(error, administradoras ){
                         
-                    }); 
+                        tipocartaoDao.listar(function(error, tipocartoes){
+                            
+                            tipoparcelaDao.listar(function(error, tipoparcelas){
+                                
+                                bandeiraDao.listar(function(error, bandeiras){
+
+                                    fileClienteDao.abre( arquivamentos[0].id, function(error, fileCliente ){
+                
+                                        fileAdminDao.abre( arquivamentos[0].id, function(error, fileAdmin ){
+                                            
+                                            layoutCliente.listar( fileCliente[0].id , function(error, layoutClientes ){
+                                                let index = 0
+                                                while (index < layoutClientes.length) {
+                                                    
+                                                    const element = layoutClientes[index];
+                                                    
+                                                    layoutAdmin.buscar( fileAdmin[0], element , function(error, conciliacao ){
+                                                        if( conciliacao && conciliacao.length > 0 ) {
+                                                            for (let i = 0; i < conciliacao.length; i++) {
+                                                                
+                                                                const registroAdm = conciliacao[i];
+                                                                var valor1 = registroAdm.valor.toFixed(2).split('.'); // 19,98
+                                                                var valor2 = element.valor.toFixed(2).split('.');     // 19,99
+                                                                
+                                                                if( ( ( registroAdm.valor + element.valor )/100 ) == 0 || 
+                                                                    parseInt(valor1[0]) == parseInt(valor2[0]) && 
+                                                                    (  parseInt(valor1[1]) % parseInt(valor2[1]) <= 2 || parseInt(valor2[1]) % parseInt(valor1[1]) <= 2 ) && 
+                                                                    !objAdmin[ registroAdm.id ] && !objCliente[ element.id ] ) {
+                                                                    
+                                                                        
+                                                                    var validacao = [];
+                                                                    
+                                                                    var pessoa   = pessoas.filter(function(value){ return value.cgccpf == element.cnpj;});                                                            
+                                                                    var administradora = administradoras.filter(function(value){ return value.nome == element.administradora;});
+                                                                    var tipocartao = tipocartoes.filter(function(value){ return value.nome == element.tipocartao;});
+                                                                    var tipoparcela = tipoparcelas.filter(function(value){ return value.nome == element.parcelamento;});
+                                                                    var bandeira = bandeiras.filter(function(value){ return value.nome == element.bandeira;});
+
+                                                                    
+                                                                    
+
+                                                                    if( administradora.length == 0 ) {
+                                                                        validacao.push("A administradora não cadastrada: " + element.administradora );
+                                                                    }
+
+                                                                    if( tipocartao.length == 0  ) {
+                                                                        validacao.push("O tipo cartão não cadastrada: " + element.tipocartao );
+                                                                    }
+
+                                                                    if( tipoparcela.length == 0 ) {
+                                                                        validacao.push("O tipo parcelamento não cadastrada: " + element.parcelamento );
+                                                                    }
+
+                                                                    if(bandeira.length == 0 ) {
+                                                                        validacao.push("A bandeira não cadastrada: " + element.bandeira );
+                                                                    }
+                                                                    var taxa = [];
+                                                                    if( validacao.length == 0 ) {
+                                                                        taxa = taxas.filter(function(value){ 
+                                                                            return value.administradora == administradora[0].id &&
+                                                                                   value.tipocartao     == tipocartao[0].id &&
+                                                                                   value.tipoparcela    == tipoparcela[0].id &&
+                                                                                   value.bandeira       == bandeira[0].id &&
+                                                                                   value.inicio         >= element.datavenda &&
+                                                                                   value.fim            <= element.datavenda;
+                                                                        });
+                                                                    }
+
+                                                                    if( taxa.length == 0 ) {
+                                                                        validacao.push("A taxa não encontrada.")
+                                                                    }
+
+                                                                    if( pessoa.length == 0 ) {
+                                                                        validacao.push("A pessoa " + element.cnpj + " não encontrada.")
+                                                                    }
+                                                
+                                                                    var registro = 
+                                                                        { 
+                                                                            status: 1, 
+                                                                            cnpj:element.cnpj,
+                                                                            pessoa: pessoa && pessoa.length > 0 ? pessoa[0].id : null,
+                                                                            administradora_nome: element.administradora,
+                                                                            administradora: administradora && administradora.length > 0 ? administradora[0].id : null,
+                                                                            tipocartao_nome: element.tipocartao,
+                                                                            tipocartao:  tipocartao && tipocartao.length > 0 ? tipocartao[0].id : null,
+                                                                            parcelamento: element.parcelamento,
+                                                                            tipoparcela:tipoparcela.length > 0 ? tipoparcela[0].id : null,
+                                                                            datavenda: element.datavenda,
+                                                                            datarecebimento:element.datarecebimento,
+                                                                            valor: element.valor,
+                                                                            desconto: registroAdm.desconto,
+                                                                            valorbruto:registroAdm.valorbruto,
+                                                                            valorliquido: registroAdm.valorliquido,
+                                                                            bandeira_nome: element.bandeira,
+                                                                            bandeira: bandeira && bandeira.length > 0 ? bandeira[0].id : null,
+                                                                            parcelas:element.parcelas,
+                                                                            resumo:registroAdm.resumo,
+                                                                            lancamento: element.lancamento,
+                                                                            taxa: taxa.length > 0 ? taxa[0].id : null,
+                                                                            observacao: validacao.length > 0 ? validacao.join(" - ") : null,
+                                                                            cliente: element.id,
+                                                                            admin: registroAdm.id
+                                                                        }
+                                                                    console.log(registro)
+                                                                    objAdmin[ registroAdm.id ] = true;
+                                                                    objCliente[ element.id   ] = true; 
+                                                                    
+                                                                    console.log(element.id + " - " + i)
+                                                                    
+                                                                    conciliacaoDao.salvar(registro,function(error, result ){
+                                                                        console.log(registro)
+                                                                        arquivamentos[0].status = 4;
+                                                                        arquivamentoDao.salvar( arquivamentos[0], function(error, resultadp ){});
+                                                                    });
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                    index++
+                                                } 
+                                                if( index >= layoutClientes.length ) {
+                                                    res.redirect('/arquivamento/' + idConciliador );
+                                                }                        
+                                            }); 
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
                 });
-            });
+            });            
         }    
 
     });
@@ -246,7 +353,7 @@ module.exports.salvar = function( application, req, res ){
                     agenda.parametros = '{ "idArquivamento":'+ arqCliente.arquivamento + ', "idCliente":' + arquivoCliente.insertId + ' ,"idAdmin":' + arquivoAdmin.insertId +'}'                    
                     
                     schedulerDao.salvar(agenda, function(error, agendas){                       
-                        connection.end();
+                        connection.end();                      
                         res.redirect('/arquivamento/' + idConciliador );
                     })
 
