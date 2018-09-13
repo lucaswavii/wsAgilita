@@ -3,7 +3,7 @@ function LayoutAdministradoraDAO( connection ){
 }
 
 LayoutAdministradoraDAO.prototype.listar = function( arquivo, callback) {
-	this._connection.query('select * from LAYOUTADMINISTRADORA where arquivamentoadministradora = ? order by id', arquivo, callback);	
+	this._connection.query('select * from LAYOUTADMINISTRADORA where arquivamentoadministradora = ? and processado is null order by id', arquivo, callback);	
 }
 
 LayoutAdministradoraDAO.prototype.buscar = function( file, dados, callback) {

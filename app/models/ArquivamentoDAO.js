@@ -11,6 +11,15 @@ ArquivamentoDAO.prototype.taxas = function( id, callback) {
 	this._connection.query(sql, id, callback);
 }
 
+ArquivamentoDAO.prototype.percentual = function(id, callback) {
+
+	var sql  = ' SELECT cliente.arquivocliente, (count(conciliado.id)/count(cliente.id)*100 ) as percentual from LAYOUTCLIENTE cliente'
+	sql 	+= ' left outer join CONCILIACAO conciliado on ( conciliado.cliente = cliente.id )'
+	sql     += ' where cliente.arquivocliente = ? '
+	
+	this._connection.query(sql,id, callback);
+}
+
 ArquivamentoDAO.prototype.listar = function( callback) {
 	this._connection.query('select * from ARQUIVAMENTO order by id', callback);	
 }

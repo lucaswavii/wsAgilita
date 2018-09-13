@@ -20,6 +20,7 @@
     "excel-date-to-js": "^1.0.0",
     "express": "^4.16.2",
     "express-fileupload": "^0.3.0",
+    "express-progressbar": "^2.0.0",
     "express-session": "^1.15.6",
     "express-validator": "^4.2.1",
     "filter-object": "^3.0.0",

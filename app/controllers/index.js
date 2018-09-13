@@ -7,6 +7,8 @@ module.exports.index = function( application, req, res ){
 		  return;			
     }
     
+    const moment = require('moment') 
+    
     var cron = require('node-cron');
 
     var task1 = cron.schedule('* * * * *', function() {
@@ -18,23 +20,59 @@ module.exports.index = function( application, req, res ){
             if( schedulers && schedulers.length > 0 ) {
             
                 for (let index = 0; index < schedulers.length; index++) {
+
+
                     try {
 
                         var tarefa = schedulers[index];
-                        tarefa.fechamento = new Date();
+                        var params = JSON.parse(tarefa.parametros); 
+                        
+                        var hoje = new Date();
+                        var agenda = { 
+                                        data: hoje, 
+                                        hora: moment(hoje).utc().format("hh:mm"), 
+                                        titulo:'Tarefa Conciliação de Arquivo', 
+                                        tipo: 6, 
+                                        resultado:"Tarefa : " + tarefa.id + 'Executada com sucesso!' ,
+                                        agenda: hoje, 
+                                        agendah: moment(hoje).utc().format("hh:mm"), 
+                                        parametros: '{}', 
+                                        habilitado:'S'
+                                    }
 
-                        schedulerDao.salvar(tarefa, function(error, schedulers){
+                        if( params.idCliente && params.idAdmin && params.idArquivamento ) {
+                            console.log("Conciliador...")
                            
-                            var con = application.config.dbConnection();
+                            tarefa.fechamento = new Date();
 
-                            var scheduler = new Schedulers( application, con, req, res );
-                            scheduler.importacaoXls(tarefa);
-                            connection.end();  
-                           
-                        }); 
+                            schedulerDao.salvar(tarefa, function(error, schedulers){
                             
+                                var con = application.config.dbConnection();
+
+                                var scheduler = new Schedulers( application, con, req, res );
+                                //scheduler.importacaoXls( tarefa, agenda );                               
+                                scheduler.importacao(tarefa)
+                                connection.end();  
+                            
+                            }); 
+                        } else if( params.idConciliador ) {
+                            console.log("Conciliação...")
+                            var tarefa = schedulers[index];
+                            tarefa.fechamento = new Date();
+
+                            schedulerDao.salvar(tarefa, function(error, schedulers){
+                            
+                                var con = application.config.dbConnection();
+
+                                var scheduler = new Schedulers( application, con, req, res );
+                                scheduler.conciliacaoCartao(tarefa,agenda)
+                                connection.end();  
+                            
+                            }); 
+
+                        }        
                     } catch (error) {
-                        con.end()
+                       console.log(error)
                     }
                 }
             } 
