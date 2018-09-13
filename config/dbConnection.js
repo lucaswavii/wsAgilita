@@ -8,9 +8,9 @@ var connMysql = function() {
 			database: 'wsagilita'
 	});*/
 	return mysql.createConnection({
-		host : '18.218.132.80',
+		host : '',
 		user: 'root',
-		password: 'Wa180279',
+		password: '',
 		database: 'wsagilita'
 	});
 }
