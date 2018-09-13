@@ -28,7 +28,7 @@ module.exports.index = function( application, req, res ){
                             var con = application.config.dbConnection();
 
                             var scheduler = new Schedulers( application, con, req, res );
-                            scheduler.importacaoXls( tarefa );
+                            scheduler.importacaoXls(tarefa);
                             connection.end();  
                            
                         }); 

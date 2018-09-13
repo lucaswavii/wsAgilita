@@ -2,8 +2,12 @@ function ConciliacaoDAO( connection ){
 	this._connection = connection; 
 }
 
-ConciliacaoDAO.prototype.listar = function( callback) {
-	this._connection.query('select * from CONCILIACAO order by id', callback);	
+ConciliacaoDAO.prototype.listarAdmin = function( id, callback) {
+	this._connection.query('select * from CONCILIACAO where admin = ? order by id', callback);	
+}
+
+ConciliacaoDAO.prototype.listarCliente = function( id, callback) {
+	this._connection.query('select * from CONCILIACAO where cliente = ? order by id', id, callback);	
 }
 
 ConciliacaoDAO.prototype.salvar = function( conciliacao, callback) {	
